@@ -13,9 +13,11 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AimAndDriveCommand;
 import frc.robot.commands.FeedCommand;
 import frc.robot.commands.RunDiagnosticsCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Diagnostics;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Feed;
@@ -45,6 +47,7 @@ public class RobotContainer {
   private final Diagnostics diagnosics = new Diagnostics(m_robotDrive);
   private final Shooter shooter = new Shooter();
   private final Feed feed = new Feed();
+  private final Arm arm = new Arm();
  // private final TankDrive drive = new TankDrive();
 
   // The driver's controller
@@ -54,13 +57,13 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Configure the button bindings
+    // Configure the button bindings 
     configureButtonBindings();
-    RunDiagnosticsCommand rdc = new RunDiagnosticsCommand(diagnosics);
-    diagnosics.setDefaultCommand(rdc);
+    // RunDiagnosticsCommand rdc = new RunDiagnosticsCommand(diagnosics);
+    // diagnosics.setDefaultCommand(rdc);
     feed.setDefaultCommand(new FeedCommand(0, feed));
     shooter.setDefaultCommand(new ShootCommand(0,0, shooter));
-    rdc.ignoringDisable(true);
+    // rdc.ignoringDisable(true);
     // Configure default commands
     m_robotDrive.setDefaultCommand(
     //    // The left stick controls translation of the robot.
@@ -84,14 +87,8 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kR1.value)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
-            m_robotDrive));
     new JoystickButton(m_driverController, 1)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.zeroHeading(),
-            m_robotDrive));
+        .whileTrue(new AimAndDriveCommand(m_robotDrive, arm, m_driverController));
     new JoystickButton(m_driverController, 8).whileTrue(new ShootCommand(1,1, shooter));
     new JoystickButton(m_driverController, 7).whileTrue(new FeedCommand(.5, feed));   
     

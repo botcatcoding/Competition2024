@@ -24,6 +24,7 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final String aLimelightName = "limelight";
   public static final class DriveConstants {
 
     public static final int gyroCanId = 12;
@@ -140,5 +141,30 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+  public static final class MechConstants {
+    public static final double kShoulderZOffset = 0;
+    public static final double kShoulderLength = 1;
+
+    public static final int shoulderLid = 20;
+    public static final int shoulderRid = 21;
+    public static final int elbowLid = 22;
+    public static final int elbowRid = 23;
+    
+    public static final int shoulderTicksToDegrees = 10;
+    public static final int elbowTicksToDegrees = 10;
+    
+    public static final int shoulderDeadband = 10;
+    public static final int elbowDeadband = 10;
+  }
+  public static final class Arena 
+  {
+    public static final double redTargetX = 8.308467;
+    public static final double redTargetY = 1.442593;
+    public static final double redTargetZ = 1.451102+.508;//+.508
+
+    public static final double blueTargetX = -8.308975;
+    public static final double blueTargetY = 1.442593;
+    public static final double blueTargetZ = 1.451102+.508;
   }
 }
