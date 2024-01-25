@@ -1,24 +1,32 @@
-
-    package frc.robot.subsystems;
+package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 public class Feed extends SubsystemBase {
-    CANSparkMax IntakeFL;
-    CANSparkMax IntakeFR;
-    CANSparkMax IntakeBL;
-    CANSparkMax IntakeBR;
+CANSparkMax intakeTL;
+CANSparkMax intakeTR;
+CANSparkMax intakeBL;
+CANSparkMax intakeBR;
+
+    private SparkPIDController intakeTLPID;
 //    TalonFX feedl;
 //    TalonFX feedr;
     public Feed()
     {
-        IntakeFL = new CANSparkMax(12, MotorType.kBrushless);
-        IntakeFR = new CANSparkMax(11, MotorType.kBrushless);
-        IntakeBL = new CANSparkMax(9, MotorType.kBrushless);
-        IntakeBR = new CANSparkMax(10, MotorType.kBrushless);
+        intakeTL = new CANSparkMax(Constants.MechConstants.topLeftIntakeSparkId, MotorType.kBrushless);
+        intakeTR = new CANSparkMax(Constants.MechConstants.topRightIntakeSparkId, MotorType.kBrushless);
+        intakeBL = new CANSparkMax(Constants.MechConstants.bottomLeftIntakeSparkID, MotorType.kBrushless);
+        intakeBR = new CANSparkMax(Constants.MechConstants.bottomRightIntakeSparkId, MotorType.kBrushless);
 
+
+        intakeBL.setInverted(true);
+        intakeBL.follow(intakeBR);
+
+        intakeTL.setInverted(true);
+        intakeTL.follow(intakeTR);
         
     //   feedl = new TalonFX(12); 
     //   feedr = new TalonFX(13);
@@ -32,8 +40,9 @@ public class Feed extends SubsystemBase {
     public void setFeedPercent(double speed)
     {
 
-        IntakeFL.set(speed);
-        IntakeBL.set(speed);
+        intakeTL.;
+        intakeBL.set(speed);
+        
         
 
     //    feedl.set(TalonFXControlMode.PercentOutput,speed);
