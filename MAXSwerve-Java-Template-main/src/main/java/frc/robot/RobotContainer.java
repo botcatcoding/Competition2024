@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
@@ -57,6 +59,10 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+    
+    
+    
     // Configure the button bindings 
     configureButtonBindings();
     // RunDiagnosticsCommand rdc = new RunDiagnosticsCommand(diagnosics);
@@ -100,7 +106,6 @@ public class RobotContainer {
   PPSwerveControllerCommand constructPPCommand(String pathName, PIDController thetaController)
   {
     PathPlannerTrajectory path = PathPlanner.loadPath(pathName, new PathConstraints(1, 1));
-
 
     PPSwerveControllerCommand ppCommand = new PPSwerveControllerCommand(
         path,

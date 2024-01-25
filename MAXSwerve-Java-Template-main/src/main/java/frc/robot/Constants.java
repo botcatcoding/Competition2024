@@ -4,7 +4,8 @@
 
 package frc.robot;
 
-import com.revrobotics.CANSparkMax.IdleMode;
+
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -156,6 +157,16 @@ public final class Constants {
     
     public static final int shoulderDeadband = 10;
     public static final int elbowDeadband = 10;
+
+    public static final int topLeftIntakeSparkId = 12;
+    public static final int topRightIntakeSparkId = 11;
+    public static final int bottomRightIntakeSparkId = 10;
+    public static final int bottomLeftIntakeSparkID = 9;
+
+
+
+    public static final double topIntakeSlurpSpeed = .2*11000;
+    public static final double bottomIntakeSlurpSpeed = .2*11000;
   }
   public static final class Arena 
   {
@@ -166,5 +177,8 @@ public final class Constants {
     public static final double blueTargetX = -8.308975;
     public static final double blueTargetY = 1.442593;
     public static final double blueTargetZ = 1.451102+.508;
+
+
+    
   }
 }
