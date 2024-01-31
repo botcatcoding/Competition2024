@@ -1,19 +1,18 @@
 package frc.robot.commands;
 
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class ShootCommand extends Command{
-    double speedl = 0;
-    double speedr = 0;
+    double velocity = 0;
 
     Shooter shooter;
-    public ShootCommand(double sl, double sr , Shooter sh)
+    public ShootCommand(double v, Shooter sh)
 
         {
             addRequirements(sh);
-            speedl = sl;
-            speedr = sr;
+            velocity = v;
             shooter = sh;
         }
         @Override
@@ -23,7 +22,7 @@ public class ShootCommand extends Command{
 
         @Override
         public void execute() {
-            shooter.setShooter(speedl,speedr);
+            shooter.setShooter(velocity);
         }
         @Override
         public void end(boolean interrupted) {

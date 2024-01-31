@@ -6,20 +6,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DriveCommand extends Command{
+public class DriveCommand extends Command {
     DriveSubsystem driveSubsystem;
     Joystick joystick;
-    public DriveCommand(DriveSubsystem ds,Joystick j)
-    {
+
+    public DriveCommand(DriveSubsystem ds, Joystick j) {
+        addRequirements(ds);
         driveSubsystem = ds;
         joystick = j;
 
-
-
     }
+
     @Override
     public void initialize() {
-        
+
     }
 
     @Override
@@ -30,10 +30,12 @@ public class DriveCommand extends Command{
                 -MathUtil.applyDeadband(joystick.getZ(), OIConstants.kDriveDeadband),
                 true, true);
     }
+
     @Override
     public void end(boolean interrupted) {
 
     }
+
     @Override
     public boolean isFinished() {
         return false;
