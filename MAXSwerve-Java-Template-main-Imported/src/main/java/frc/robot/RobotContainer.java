@@ -6,8 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.OIConstants;
@@ -16,14 +14,13 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.commands.RunDiagnosticsCommand;
 import frc.robot.commands.SlurpCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShootCommandByAxis;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Diagnostics;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Slurp;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /*
@@ -34,11 +31,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
     // The robot's subsystems
-    private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-    private final Diagnostics diagnosics = new Diagnostics(m_robotDrive);
+    // private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+    // private final Diagnostics diagnosics = new Diagnostics(m_robotDrive);
     private final Shooter shooter = new Shooter();
-    private final Slurp slurp = new Slurp();
-    private final Arm arm = new Arm();
+    // private final Slurp slurp = new Slurp();
+    // private final Arm arm = new Arm();
 
     // The driver's controller
     Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
@@ -48,21 +45,20 @@ public class RobotContainer {
      */
     public RobotContainer() {
 
-        NamedCommands.registerCommand("slurp", Slurp.slurp(slurp));
-        NamedCommands.registerCommand("stopSlurp", Slurp.stopSlurp(slurp));
+        // NamedCommands.registerCommand("slurp", Slurp.slurp(slurp));
         NamedCommands.registerCommand("shoot", Shooter.shoot(shooter));
-        NamedCommands.registerCommand("stopshoot", Shooter.stopshoot(shooter));
-        NamedCommands.registerCommand("gotoSlurp", Arm.gotoSlurpPosition(arm));
+        // NamedCommands.registerCommand("gotoSlurp", Arm.gotoSlurpPosition(arm));
 
         // Configure the button bindings
         configureButtonBindings();
-        RunDiagnosticsCommand rdc = new RunDiagnosticsCommand(diagnosics);
-        diagnosics.setDefaultCommand(rdc);
-        slurp.setDefaultCommand(new SlurpCommand(0, slurp));
+        // RunDiagnosticsCommand rdc = new RunDiagnosticsCommand(diagnosics);
+        // diagnosics.setDefaultCommand(rdc);
+        // slurp.setDefaultCommand(new SlurpCommand(0, slurp));
         shooter.setDefaultCommand(new ShootCommand(0, shooter));
-        rdc.ignoringDisable(true);
+        // rdc.ignoringDisable(true);
         // Configure default commands
-        m_robotDrive.setDefaultCommand(new DriveCommand(m_robotDrive, m_driverController));
+        // m_robotDrive.setDefaultCommand(new DriveCommand(m_robotDrive,
+        // m_driverController));
     }
 
     /**
@@ -75,12 +71,14 @@ public class RobotContainer {
      * {@link JoystickButton}.
      */
     private void configureButtonBindings() {
-        new JoystickButton(m_driverController, 1)
-                .whileTrue(new AimAndDriveCommand(m_robotDrive, arm, m_driverController));
+        // new JoystickButton(m_driverController, 1)
+        // .whileTrue(new AimAndDriveCommand(m_robotDrive, arm, m_driverController));
         new JoystickButton(m_driverController, 8).whileTrue(new ShootCommand(1,
                 shooter));
-        new JoystickButton(m_driverController, 7).whileTrue(new SlurpCommand(.5,
-                slurp));
+        new JoystickButton(m_driverController, 10).whileTrue(new ShootCommandByAxis(m_driverController,
+                shooter));
+        new JoystickButton(m_driverController, 7).whileTrue(new ShootCommand(-.1,
+                shooter));
 
     }
 

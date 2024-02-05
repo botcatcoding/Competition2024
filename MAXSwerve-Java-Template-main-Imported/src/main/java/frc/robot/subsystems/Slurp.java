@@ -57,7 +57,4 @@ public class Slurp extends SubsystemBase {
         return new SlurpCommand(500, slurp);
     }
 
-    public static Command stopSlurp(Slurp slurp) {
-        return new SlurpCommand(0, slurp);
-    }
 }

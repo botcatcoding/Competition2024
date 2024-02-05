@@ -6,6 +6,8 @@ import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,11 +23,16 @@ public class Arm extends SubsystemBase {
     MotionMagicDutyCycle shoulderMotionControl = new MotionMagicDutyCycle(0);
     MotionMagicDutyCycle elbowMotionControl = new MotionMagicDutyCycle(0);
 
+    DutyCycleEncoder shoulEncoder = new DutyCycleEncoder(0);
+
     public Arm() {
         shoulderL = new TalonFX(Constants.MechConstants.shoulderLid);
         shoulderR = new TalonFX(Constants.MechConstants.shoulderRid);
         elbowL = new TalonFX(Constants.MechConstants.elbowLid);
         elbowR = new TalonFX(Constants.MechConstants.elbowRid);
+        // read absolute encoder and convert encoder to falcon
+        double myValue = (shoulEncoder.getAbsolutePosition() - Constants.MechConstants.shoulderEncoderZeroValue)
+                * Constants.MechConstants.falconToAbsEncoderShoulder;
 
         shoulderL.setNeutralMode(NeutralModeValue.Brake);
         shoulderR.setNeutralMode(NeutralModeValue.Brake);
@@ -34,6 +41,11 @@ public class Arm extends SubsystemBase {
         elbowL.setNeutralMode(NeutralModeValue.Brake);
         elbowR.setNeutralMode(NeutralModeValue.Brake);
         elbowR.setControl(new Follower(elbowL.getDeviceID(), false));
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Shoulder Encoder", shoulEncoder.getAbsolutePosition());
     }
 
     public void setPosition(double shoulderDegrees, double elbowDegrees) {
