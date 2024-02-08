@@ -17,7 +17,8 @@ import frc.robot.commands.ShootCommand;
 public class Shooter extends SubsystemBase {
 
     DutyCycleOut zeroSpeedControl = new DutyCycleOut(0);
-    DutyCycleOut percentOutputControl = new DutyCycleOut(0);
+    DutyCycleOut percentOutputControlL = new DutyCycleOut(0);
+    DutyCycleOut percentOutputControlR = new DutyCycleOut(0);
     // VelocityDutyCycle shooterVelocityControl = new VelocityDutyCycle(0);
 
     TalonFX shootTL;
@@ -41,15 +42,18 @@ public class Shooter extends SubsystemBase {
         shootBL.setNeutralMode(NeutralModeValue.Coast);
         shootBR.setNeutralMode(NeutralModeValue.Coast);
 
-        shootTR.setControl(new Follower(shootTL.getDeviceID(), true));
-        shootBR.setControl(new Follower(shootTL.getDeviceID(), true));
+        shootBR.setControl(new Follower(shootTR.getDeviceID(), false));
         shootBL.setControl(new Follower(shootTL.getDeviceID(), false));
+        // shootBL.setControl(new Follower(shootTL.getDeviceID(), false));
 
     }
 
-    public void setShooter(double speed) {
-        percentOutputControl.Output = speed;
-        shootTL.setControl(percentOutputControl);
+    public void setShooter(double speedl, double speedr) {
+        percentOutputControlL.Output = speedl;
+        percentOutputControlR.Output = speedr;
+        shootTL.setControl(percentOutputControlL);
+        shootTR.setControl(percentOutputControlR);
+
     }
 
     public static Command shoot(Shooter shoot) {

@@ -1,6 +1,33 @@
 {
   "NetworkTables": {
     "retained": {
+      "GRIP": {
+        "myBlobsReport": {
+          "open": true
+        },
+        "myContoursReport": {
+          "double[]##v_/GRIP/myContoursReport/area": {
+            "open": true
+          },
+          "double[]##v_/GRIP/myContoursReport/centerX": {
+            "open": true
+          },
+          "double[]##v_/GRIP/myContoursReport/centerY": {
+            "open": true
+          },
+          "double[]##v_/GRIP/myContoursReport/height": {
+            "open": true
+          },
+          "double[]##v_/GRIP/myContoursReport/solidity": {
+            "open": true
+          },
+          "double[]##v_/GRIP/myContoursReport/width": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
         "open": true
       }

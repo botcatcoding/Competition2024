@@ -26,26 +26,27 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
     // Create MAXSwerveModules
-    private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
+    final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
             DriveConstants.kFrontLeftDrivingCanId,
             DriveConstants.kFrontLeftTurningCanId,
             DriveConstants.kFrontLeftChassisAngularOffset);
 
-    private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
+    final MAXSwerveModule m_frontRight = new MAXSwerveModule(
             DriveConstants.kFrontRightDrivingCanId,
             DriveConstants.kFrontRightTurningCanId,
             DriveConstants.kFrontRightChassisAngularOffset);
 
-    private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
+    final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
             DriveConstants.kRearLeftDrivingCanId,
             DriveConstants.kRearLeftTurningCanId,
             DriveConstants.kBackLeftChassisAngularOffset);
 
-    private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
+    final MAXSwerveModule m_rearRight = new MAXSwerveModule(
             DriveConstants.kRearRightDrivingCanId,
             DriveConstants.kRearRightTurningCanId,
             DriveConstants.kBackRightChassisAngularOffset);
@@ -326,8 +327,20 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public String diagnostic() {
-
-        return m_frontLeft.diagnostic();
-
+        MAXSwerveModule[] modules = new MAXSwerveModule[] { m_frontLeft, m_frontRight, m_rearLeft, m_rearRight };
+        String faults = "";
+        boolean faultered = false;
+        for (int i = 0; i < modules.length; i++) {
+            String moduleFault = modules[i].diagnostic();
+            if (moduleFault != null) {
+                faults += moduleFault + ", ";
+                faultered = true;
+            }
+        }
+        if (faultered) {
+            return faults;
+        }
+        return null;
     }
+
 }

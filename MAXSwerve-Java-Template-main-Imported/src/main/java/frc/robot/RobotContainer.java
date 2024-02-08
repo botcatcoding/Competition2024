@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AimAndDriveCommand;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.RunDiagnosticsCommand;
 import frc.robot.commands.SlurpCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootCommandByAxis;
@@ -31,8 +30,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
     // The robot's subsystems
-    // private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-    // private final Diagnostics diagnosics = new Diagnostics(m_robotDrive);
+    private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+    private final Diagnostics diagnosics = new Diagnostics(m_robotDrive);
     private final Shooter shooter = new Shooter();
     // private final Slurp slurp = new Slurp();
     // private final Arm arm = new Arm();
@@ -77,7 +76,7 @@ public class RobotContainer {
                 shooter));
         new JoystickButton(m_driverController, 10).whileTrue(new ShootCommandByAxis(m_driverController,
                 shooter));
-        new JoystickButton(m_driverController, 7).whileTrue(new ShootCommand(-.1,
+        new JoystickButton(m_driverController, 7).whileTrue(new ShootCommand(-.25,
                 shooter));
 
     }

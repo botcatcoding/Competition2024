@@ -29,7 +29,7 @@ public class ShootCommandByAxis extends Command {
     public void execute() {
         double speed = -joystick.getRawAxis(3);
         speed = (speed + 1) / 2;
-        shooter.setShooter(speed);
+        shooter.setShooter(speed, -speed / 2);
         SmartDashboard.putNumber("shootSpeed", speed);
     }
 

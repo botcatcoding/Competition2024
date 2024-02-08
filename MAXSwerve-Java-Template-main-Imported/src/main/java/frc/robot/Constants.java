@@ -27,6 +27,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
     public static final String aLimelightName = "limelight";
+    public static final String aOrangelightName = "orangelight";
     // public static final Transform2d limeLightFieldOffset = new Transform2d(16.541
     // / 2, 8.1026 / 2, new Rotation2d());
     public static final double limeLightxOff = 16.541 / 2;

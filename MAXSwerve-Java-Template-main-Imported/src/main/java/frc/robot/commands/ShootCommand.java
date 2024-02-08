@@ -17,6 +17,7 @@ public class ShootCommand extends Command {
         // velocity = v;
         speed = s;
         shooter = sh;
+
     }
 
     @Override
@@ -27,7 +28,7 @@ public class ShootCommand extends Command {
     @Override
     public void execute() {
         SmartDashboard.putNumber("shootCommand", speed);
-        shooter.setShooter(speed);
+        shooter.setShooter(speed, -speed / 2);
     }
 
     @Override
