@@ -2,8 +2,10 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,13 +20,17 @@ public class Slurp extends SubsystemBase {
     private SparkPIDController intakeTRPID;
     private SparkPIDController intakeBRPID;
 
-    // TalonFX feedl;
-    // TalonFX feedr;
     public Slurp() {
+
         intakeTL = new CANSparkMax(Constants.MechConstants.topLeftIntakeSparkId, MotorType.kBrushless);
         intakeTR = new CANSparkMax(Constants.MechConstants.topRightIntakeSparkId, MotorType.kBrushless);
         intakeBL = new CANSparkMax(Constants.MechConstants.bottomLeftIntakeSparkID, MotorType.kBrushless);
         intakeBR = new CANSparkMax(Constants.MechConstants.bottomRightIntakeSparkId, MotorType.kBrushless);
+
+        intakeTL.setIdleMode(IdleMode.kBrake);
+        intakeTR.setIdleMode(IdleMode.kBrake);
+        intakeBL.setIdleMode(IdleMode.kBrake);
+        intakeBR.setIdleMode(IdleMode.kBrake);
 
         intakeBL.setInverted(true);
         intakeBL.follow(intakeBR);
@@ -38,9 +44,9 @@ public class Slurp extends SubsystemBase {
         // feedr.setNeutralMode(NeutralMode.Coast);
     }
 
-    public void setFeedVelo(int ticks) {
-        intakeTRPID.setReference(ticks, CANSparkMax.ControlType.kVelocity);
-        intakeBRPID.setReference(-ticks, CANSparkMax.ControlType.kVelocity);
+    public void setFeedVelo(double speed) {
+        intakeTRPID.setReference(speed, CANSparkMax.ControlType.kVelocity);
+        intakeBRPID.setReference(-speed, CANSparkMax.ControlType.kVelocity);
     }
 
     public void setFeedPercent(double speed) {
@@ -53,8 +59,12 @@ public class Slurp extends SubsystemBase {
         // //feed.set(speed);
     }
 
-    public static Command slurp(Slurp slurp) {
-        return new SlurpCommand(500, slurp);
+    public static Command slurp(Slurp slurp, DigitalInput slurpDectect) {
+        return new SlurpCommand(1, false, true, slurp, slurpDectect);
+    }
+
+    public static Command slurpStop(Slurp slurp, DigitalInput slurpDectect) {
+        return new SlurpCommand(0, false, false, slurp, slurpDectect);
     }
 
 }

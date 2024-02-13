@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -80,6 +81,35 @@ public class Arm extends SubsystemBase {
 
     public static Command gotoSlurpPosition(Arm arm) {
         return new SetElbowAndShoulderByPositionCommand(80, 140, arm);
+    }
+
+    public static KinematicsResult calculateArmKinematics(double tx, double ty, double tz, double bx, double by,
+            double bz, double sa) {
+        double differenceY = ty - by;
+        double differenceX = tx - bx;
+        double differenceZ = tz - bz;
+        double yaw = Math.asin(differenceY / differenceX);
+        double shoulderZ = bz + Constants.MechConstants.kShoulderZOffset;
+        double d = Math.cos(sa) / Constants.MechConstants.kShoulderLength;
+        double l = Math.sqrt(Math.pow(differenceY, 2) + Math.pow(differenceX, 2));
+        double e = l - d;
+        double f = Math.sin(sa) * Constants.MechConstants.kShoulderLength + shoulderZ;
+        double g = differenceZ - f;
+        // System.out.println(e+"\t"+g);
+        double elbowAngle = Rotation2d.fromDegrees(180).getRadians() - sa + Math.atan2(g, e);
+
+        return new KinematicsResult(yaw, elbowAngle);
+    }
+
+    public static class KinematicsResult {
+        public double yaw;
+        public double elbowAngle;
+
+        public KinematicsResult(double y, double e) {
+            yaw = y;
+            elbowAngle = e;
+        }
+
     }
 
 }

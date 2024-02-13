@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.OIConstants;
@@ -19,16 +20,17 @@ public class DriveCommand extends Command {
 
     @Override
     public void initialize() {
-
+        driveSubsystem.pointAtYaw = false;
     }
 
     @Override
     public void execute() {
+
+        double yawCommand = -MathUtil.applyDeadband(joystick.getZ() / 2, OIConstants.kDriveDeadband * 2);
         driveSubsystem.drive(
                 -MathUtil.applyDeadband(joystick.getY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(joystick.getX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(joystick.getZ(), OIConstants.kDriveDeadband),
-                true, true);
+                yawCommand, true);
     }
 
     @Override

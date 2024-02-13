@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -62,7 +65,10 @@ public class DriveSubsystem extends SubsystemBase {
     private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
     private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
     private double m_prevTime = WPIUtilJNI.now() * 1e-6;
-
+    public boolean pointAtYaw = false;
+    public double theYaw = 0;
+    ProfiledPIDController profiledPIDController = new ProfiledPIDController(AutoConstants.kPTheta, 0, 0,
+            new TrapezoidProfile.Constraints(DriveConstants.kMaxAngularSpeed, DriveConstants.kMaxAngularSpeed * 2));
     // Odometry class for tracking robot pose
 
     SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
@@ -88,6 +94,8 @@ public class DriveSubsystem extends SubsystemBase {
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem() {
         SmartDashboard.putData("Field", m_field);
+
+        profiledPIDController.enableContinuousInput(-Math.PI, Math.PI);
         // this is where path planner goes
         AutoBuilder.configureHolonomic(
                 this::getPose,
@@ -193,7 +201,16 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void driveRobotRelative(ChassisSpeeds chassisSpeedsIn) {
+
+        double yawCommandToTarget = profiledPIDController.calculate(getPose().getRotation().getRadians(),
+                theYaw);
+        if (pointAtYaw) {
+            chassisSpeedsIn.omegaRadiansPerSecond = yawCommandToTarget;
+        }
+
         SwerveModuleState[] sms = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeedsIn);
+        SwerveDriveKinematics.desaturateWheelSpeeds(
+                sms, DriveConstants.kMaxSpeedMetersPerSecond);
         m_frontLeft.setDesiredState(sms[0]);
         m_frontRight.setDesiredState(sms[1]);
         m_rearLeft.setDesiredState(sms[2]);
@@ -210,7 +227,7 @@ public class DriveSubsystem extends SubsystemBase {
      *                      field.
      * @param rateLimit     Whether to enable rate limiting for smoother control.
      */
-    public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+    public void drive(double xSpeed, double ySpeed, double rot, boolean rateLimit) {
 
         double xSpeedCommanded;
         double ySpeedCommanded;
@@ -267,17 +284,7 @@ public class DriveSubsystem extends SubsystemBase {
         double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
         double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
-        var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-                fieldRelative
-                        ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                                Rotation2d.fromDegrees(theGyro.getYaw().getValue()))
-                        : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
-        SwerveDriveKinematics.desaturateWheelSpeeds(
-                swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-        m_frontLeft.setDesiredState(swerveModuleStates[0]);
-        m_frontRight.setDesiredState(swerveModuleStates[1]);
-        m_rearLeft.setDesiredState(swerveModuleStates[2]);
-        m_rearRight.setDesiredState(swerveModuleStates[3]);
+        driveFieldRelative(new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     }
 
     /**

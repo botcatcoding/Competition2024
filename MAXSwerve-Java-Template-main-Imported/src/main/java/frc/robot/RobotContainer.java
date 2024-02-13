@@ -6,10 +6,11 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AimAndDriveCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.SlurpCommand;
 import frc.robot.commands.ShootCommand;
@@ -33,11 +34,13 @@ public class RobotContainer {
     private final DriveSubsystem m_robotDrive = new DriveSubsystem();
     private final Diagnostics diagnosics = new Diagnostics(m_robotDrive);
     private final Shooter shooter = new Shooter();
-    // private final Slurp slurp = new Slurp();
-    // private final Arm arm = new Arm();
+    private final Slurp slurp = new Slurp();
+    private final Arm arm = new Arm();
+    final DigitalInput slurpDetect = new DigitalInput(2);
 
     // The driver's controller
     Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
+    Joystick m_mechDriver = new Joystick(OIConstants.kMechControllerPort);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -52,12 +55,12 @@ public class RobotContainer {
         configureButtonBindings();
         // RunDiagnosticsCommand rdc = new RunDiagnosticsCommand(diagnosics);
         // diagnosics.setDefaultCommand(rdc);
-        // slurp.setDefaultCommand(new SlurpCommand(0, slurp));
+        slurp.setDefaultCommand(new SlurpCommand(0, false, false, slurp, slurpDetect));
         shooter.setDefaultCommand(new ShootCommand(0, shooter));
         // rdc.ignoringDisable(true);
         // Configure default commands
-        // m_robotDrive.setDefaultCommand(new DriveCommand(m_robotDrive,
-        // m_driverController));
+        m_robotDrive.setDefaultCommand(new DriveCommand(m_robotDrive,
+                m_driverController));
     }
 
     /**
@@ -76,8 +79,7 @@ public class RobotContainer {
                 shooter));
         new JoystickButton(m_driverController, 10).whileTrue(new ShootCommandByAxis(m_driverController,
                 shooter));
-        new JoystickButton(m_driverController, 7).whileTrue(new ShootCommand(-.25,
-                shooter));
+        new JoystickButton(m_driverController, 7).whileTrue(new SlurpCommand(.2, false, false, slurp, slurpDetect));
 
     }
 
