@@ -29,7 +29,6 @@ import frc.robot.LimelightHelpers;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.utils.SwerveUtils;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -89,6 +88,15 @@ public class DriveSubsystem extends SubsystemBase {
                 m_frontRight.getState(),
                 m_rearLeft.getState(),
                 m_rearRight.getState());
+    }
+
+    // chassis speeds field
+    public ChassisSpeeds getFieldRelativeSpeeds() {
+        return ChassisSpeeds
+                .fromRobotRelativeSpeeds(DriveConstants.kDriveKinematics.toChassisSpeeds(m_frontLeft.getState(),
+                        m_frontRight.getState(),
+                        m_rearLeft.getState(),
+                        m_rearRight.getState()), theGyro.getRotation2d());
     }
 
     /** Creates a new DriveSubsystem. */
