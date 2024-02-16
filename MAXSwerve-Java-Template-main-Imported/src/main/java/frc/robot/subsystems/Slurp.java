@@ -6,8 +6,10 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.commands.SlurpCommand;
 
@@ -65,6 +67,17 @@ public class Slurp extends SubsystemBase {
 
     public static Command slurpStop(Slurp slurp, DigitalInput slurpDectect) {
         return new SlurpCommand(0, false, false, slurp, slurpDectect);
+    }
+
+    public static boolean slurpFieldOrient(int dpad, double yaw) {// dpad = 0,90,180,270. yaw = 0-360
+        int error = (int) (dpad - yaw);
+        error = (error % 360) + (error < 0 ? 360 : 0);
+        if (error > 0 && error < 90) {
+            return true;
+        } else if (error > 90 && error < 270) {
+            return false;
+        }
+        return true;
     }
 
 }

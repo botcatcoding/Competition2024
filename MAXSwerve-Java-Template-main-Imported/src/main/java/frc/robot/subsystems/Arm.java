@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import org.opencv.core.Mat;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
@@ -13,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.SetElbowAndShoulderByPositionCommand;
+import frc.utils.SwerveUtils;
 
 public class Arm extends SubsystemBase {
     TalonFX shoulderL;
@@ -24,29 +28,44 @@ public class Arm extends SubsystemBase {
     MotionMagicDutyCycle shoulderMotionControl = new MotionMagicDutyCycle(0);
     MotionMagicDutyCycle elbowMotionControl = new MotionMagicDutyCycle(0);
 
-    DutyCycleEncoder shoulEncoder = new DutyCycleEncoder(0);
+    DutyCycleEncoder shoulderEncoder = new DutyCycleEncoder(0);
+    DutyCycleEncoder elbowEncoder = new DutyCycleEncoder(1);
 
     public Arm() {
         shoulderL = new TalonFX(Constants.MechConstants.shoulderLid);
         shoulderR = new TalonFX(Constants.MechConstants.shoulderRid);
         elbowL = new TalonFX(Constants.MechConstants.elbowLid);
         elbowR = new TalonFX(Constants.MechConstants.elbowRid);
-        // read absolute encoder and convert encoder to falcon
-        double myValue = (shoulEncoder.getAbsolutePosition() - Constants.MechConstants.shoulderEncoderZeroValue)
-                * Constants.MechConstants.falconToAbsEncoderShoulder;
 
-        shoulderL.setNeutralMode(NeutralModeValue.Brake);
-        shoulderR.setNeutralMode(NeutralModeValue.Brake);
+        TalonFXConfiguration configShoulder = new TalonFXConfiguration();
+        configShoulder.Feedback.SensorToMechanismRatio = -Constants.MechConstants.falconToAbsEncoderShoulder;
+
+        TalonFXConfiguration configElbow = new TalonFXConfiguration();
+        configElbow.Feedback.SensorToMechanismRatio = -Constants.MechConstants.falconToAbsEncoderElbow;
+
+        shoulderL.getConfigurator().apply(configShoulder);
+        shoulderR.getConfigurator().apply(new TalonFXConfiguration());
+        elbowL.getConfigurator().apply(configElbow);
+        elbowR.getConfigurator().apply(new TalonFXConfiguration());
+        // read absolute encoder and convert encoder to falcon
+        // double myValue = (shoulderEncoder.getAbsolutePosition() -
+        // Constants.MechConstants.shoulderEncoderZeroValue)
+        // * Constants.MechConstants.falconToAbsEncoderShoulder;
+        shoulderL.setPosition(getShoulderAngle());
+        shoulderL.setNeutralMode(NeutralModeValue.Coast);
+        shoulderR.setNeutralMode(NeutralModeValue.Coast);
         shoulderR.setControl(new Follower(shoulderL.getDeviceID(), false));
 
-        elbowL.setNeutralMode(NeutralModeValue.Brake);
-        elbowR.setNeutralMode(NeutralModeValue.Brake);
+        elbowL.setPosition(getElbowAngle());
+        elbowL.setNeutralMode(NeutralModeValue.Coast);
+        elbowR.setNeutralMode(NeutralModeValue.Coast);
         elbowR.setControl(new Follower(elbowL.getDeviceID(), false));
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Shoulder Encoder", shoulEncoder.getAbsolutePosition());
+        SmartDashboard.putNumber("Shoulder Encoder", getShoulderAngle());
+        SmartDashboard.putNumber("Elbow Encoder", elbowEncoder.getAbsolutePosition());
     }
 
     public void setPosition(double shoulderDegrees, double elbowDegrees) {
@@ -112,4 +131,22 @@ public class Arm extends SubsystemBase {
 
     }
 
+    public double getShoulderAngle() {
+        double absolutePosition = ((1 - shoulderEncoder.getAbsolutePosition())
+                + Constants.MechConstants.shoulderEncoderZeroValue) * 2 * Math.PI;
+        absolutePosition = SwerveUtils.WrapAngle(absolutePosition) / 2 / Math.PI;
+        if (absolutePosition > .7) {
+            absolutePosition = 0;
+        }
+        return absolutePosition;
+
+    }
+
+    public double getElbowAngle() {
+        double absolutePosition = ((1 - elbowEncoder.getAbsolutePosition())
+                + Constants.MechConstants.elbowEncoderZeroValue) * 2 * Math.PI;
+        absolutePosition = SwerveUtils.WrapAngle(absolutePosition) / 2 / Math.PI;
+        return absolutePosition;
+
+    }
 }

@@ -165,35 +165,37 @@ public final class Constants {
         public static final double kShoulderZOffset = 0;
         public static final double kShoulderLength = 1;
 
-        public static final int shoulderLid = 20;
-        public static final int shoulderRid = 21;
-        public static final int elbowLid = 22;
-        public static final int elbowRid = 23;
-
         public static final int shoulderRotationToDegrees = 10;
         public static final int elbowRotationToDegrees = 10;
 
         public static final int shoulderDeadband = 10;
         public static final int elbowDeadband = 10;
 
-        public static final int topLeftIntakeSparkId = 12;
-        public static final int topRightIntakeSparkId = 11;
-        public static final int bottomRightIntakeSparkId = 10;
-        public static final int bottomLeftIntakeSparkID = 9;
-
         public static final double topIntakeSlurpSpeed = .2 * 11000;
         public static final double bottomIntakeSlurpSpeed = .2 * 11000;
 
-        public static final int shootTL = 23;
-        public static final int shootTR = 22;
-        public static final int shootBL = 21;
-        public static final int shootBR = 20;
+        public static final int shoulderRid = 9;
+        public static final int shoulderLid = 10;
 
-        public static final double falconToAbsEncoderShoulder = 120.61538462;
-        // elbow should be the same but double check (49)(26/64)
-        public static final double falconToAbsEncoderElbow = 120.61538462;
+        public static final int shootTR = 11;
+        public static final int shootTL = 12;
+        public static final int shootBR = 13;
+        public static final int shootBL = 14;
 
-        public static final double shoulderEncoderZeroValue = .848;
+        public static final int elbowRid = 15;
+        public static final int elbowLid = 16;
+
+        public static final int topRightIntakeSparkId = 17;
+        public static final int bottomRightIntakeSparkId = 18;
+        public static final int bottomLeftIntakeSparkID = 19;
+        public static final int topLeftIntakeSparkId = 20;
+
+        public static final double falconToAbsEncoderShoulder = (49.0) * (64.0 / 22.0);
+        // elbow should be the same but double check (49)(22/64)
+        public static final double falconToAbsEncoderElbow = 49.0;
+
+        public static final double shoulderEncoderZeroValue = .02;
+        public static final double elbowEncoderZeroValue = -.213;
     }
 
     public static final class Arena {
