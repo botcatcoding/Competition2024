@@ -33,6 +33,14 @@
       }
     },
     "transitory": {
+      "LiveWindow": {
+        ".status": {
+          "open": true
+        },
+        "Elbow": {
+          "open": true
+        }
+      },
       "SmartDashboard": {
         "Field": {
           "open": true
@@ -42,6 +50,20 @@
     },
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[1]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[2]": "Digital Input",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/Pigeon 2 (v6) [39]": "Gyro",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [10]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [11]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [12]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [13]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [14]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [15]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [16]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [9]": "Motor Controller",
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {

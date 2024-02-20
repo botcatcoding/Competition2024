@@ -6,20 +6,18 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 //import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
-
-import frc.robot.subsystems.Arm;
+// import frc.robot.commands.AimAndDriveCommand.KinematicsResult;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.Arm.KinematicsResult;
 
 public class AimAtSpeakerCommand extends Command {
-    Arm arm;
+    // shoulder arm;
     DriveSubsystem driveSubsystem;
 
-    public AimAtSpeakerCommand(DriveSubsystem ds, Arm a) {
-        addRequirements(a);
-        arm = a;
-        driveSubsystem = ds;
-    }
+    // public AimAtSpeakerCommand(DriveSubsystem ds, Arm a) {
+    // addRequirements(a);
+    // arm = a;
+    // driveSubsystem = ds;
+    // }
 
     @Override
     public void initialize() {
@@ -56,20 +54,21 @@ public class AimAtSpeakerCommand extends Command {
         tx = tx - fieldRelative.vxMetersPerSecond * flightTime;
         ty = ty - fieldRelative.vyMetersPerSecond * flightTime;
 
-        KinematicsResult kr = Arm.calculateArmKinematics(tx, ty, tz, pose.getX(), pose.getY(), 0, shoulderAngle);
+        // KinematicsResult kr = Arm.calculateArmKinematics(tx, ty, tz, pose.getX(),
+        // pose.getY(), 0, shoulderAngle);
 
         // System.out.println(Rotation2d.fromRadians(shoulderAngle).getDegrees() + "\t"
         // + Rotation2d.fromRadians(kr.elbowAngle).getDegrees() + "\t"
         // + Rotation2d.fromRadians(kr.yaw).getDegrees());
-        arm.setPosition(shoulderAngle, kr.elbowAngle);
-        driveSubsystem.theYaw = kr.yaw;
+        // arm.setPosition(shoulderAngle, kr.elbowAngle);
+        // driveSubsystem.theYaw = kr.yaw;
     }
 
-    @Override
-    public void end(boolean interrupted) {
-        arm.stop();
-        driveSubsystem.pointAtYaw = false;
-    }
+    // @Override
+    // public void end(boolean interrupted) {
+    // arm.stop();
+    // driveSubsystem.pointAtYaw = false;
+    // }
 
     @Override
     public boolean isFinished() {

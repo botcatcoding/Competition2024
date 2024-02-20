@@ -101,6 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem() {
+        zeroHeading();
         SmartDashboard.putData("Field", m_field);
 
         profiledPIDController.enableContinuousInput(-Math.PI, Math.PI);

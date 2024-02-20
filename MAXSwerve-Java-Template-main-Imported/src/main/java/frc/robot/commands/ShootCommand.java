@@ -15,7 +15,7 @@ public class ShootCommand extends Command {
     {
         addRequirements(sh);
         // velocity = v;
-        speed = s;
+        speed = -s;
         shooter = sh;
 
     }

@@ -35,7 +35,7 @@ public final class Constants {
 
     public static final class DriveConstants {
 
-        public static final int gyroCanId = 12;
+        public static final int gyroCanId = 39;
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
         public static final double kMaxSpeedMetersPerSecond = 4.8;
@@ -163,13 +163,10 @@ public final class Constants {
 
     public static final class MechConstants {
         public static final double kShoulderZOffset = 0;
-        public static final double kShoulderLength = 1;
+        public static final double kShoulderLength = .381;
 
-        public static final int shoulderRotationToDegrees = 10;
-        public static final int elbowRotationToDegrees = 10;
-
-        public static final int shoulderDeadband = 10;
-        public static final int elbowDeadband = 10;
+        public static final double shoulderDeadband = .01;
+        public static final double elbowDeadband = 0.01;
 
         public static final double topIntakeSlurpSpeed = .2 * 11000;
         public static final double bottomIntakeSlurpSpeed = .2 * 11000;
@@ -195,7 +192,7 @@ public final class Constants {
         public static final double falconToAbsEncoderElbow = 49.0;
 
         public static final double shoulderEncoderZeroValue = .02;
-        public static final double elbowEncoderZeroValue = -.213;
+        public static final double elbowEncoderZeroValue = -.25;
     }
 
     public static final class Arena {

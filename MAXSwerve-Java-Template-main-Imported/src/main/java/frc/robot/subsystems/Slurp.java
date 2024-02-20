@@ -4,12 +4,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.commands.SlurpCommand;
 
@@ -29,6 +26,35 @@ public class Slurp extends SubsystemBase {
         intakeBL = new CANSparkMax(Constants.MechConstants.bottomLeftIntakeSparkID, MotorType.kBrushless);
         intakeBR = new CANSparkMax(Constants.MechConstants.bottomRightIntakeSparkId, MotorType.kBrushless);
 
+        intakeTL.restoreFactoryDefaults();
+        intakeTR.restoreFactoryDefaults();
+        intakeBL.restoreFactoryDefaults();
+        intakeBR.restoreFactoryDefaults();
+
+        intakeTL.setSmartCurrentLimit(40);
+        intakeTR.setSmartCurrentLimit(40);
+        intakeBL.setSmartCurrentLimit(40);
+        intakeBR.setSmartCurrentLimit(40);
+
+        double p = 0.00009999999747378752;
+        double i = 9.99999993922529e-9;
+        double d = 0;
+
+        intakeTL.getPIDController().setP(p);
+        intakeTR.getPIDController().setP(p);
+        intakeBL.getPIDController().setP(p);
+        intakeBR.getPIDController().setP(p);
+
+        intakeTL.getPIDController().setI(i);
+        intakeTR.getPIDController().setI(i);
+        intakeBL.getPIDController().setI(i);
+        intakeBR.getPIDController().setI(i);
+
+        intakeTL.getPIDController().setD(d);
+        intakeTR.getPIDController().setD(d);
+        intakeBL.getPIDController().setD(d);
+        intakeBR.getPIDController().setD(d);
+
         intakeTL.setIdleMode(IdleMode.kBrake);
         intakeTR.setIdleMode(IdleMode.kBrake);
         intakeBL.setIdleMode(IdleMode.kBrake);
@@ -40,6 +66,15 @@ public class Slurp extends SubsystemBase {
         intakeTL.setInverted(true);
         intakeTL.follow(intakeTR);
 
+        intakeTRPID = intakeTR.getPIDController();
+        intakeBRPID = intakeBR.getPIDController();
+
+        intakeTL.burnFlash();
+        intakeTR.burnFlash();
+        intakeBL.burnFlash();
+        intakeBR.burnFlash();
+        // 0.00009999999747378752 kpid p
+        // 9.99999993922529e-9 kpid i
         // feedl = new TalonFX(12);
         // feedr = new TalonFX(13);
         // feedl.setNeutralMode(NeutralMode.Coast);
