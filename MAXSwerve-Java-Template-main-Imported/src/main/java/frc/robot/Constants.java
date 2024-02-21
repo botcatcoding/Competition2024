@@ -193,6 +193,12 @@ public final class Constants {
 
         public static final double shoulderEncoderZeroValue = .02;
         public static final double elbowEncoderZeroValue = -.25;
+
+        public static final double shoulderDefault = .25;
+        public static final double shoulderMiddle = .25;
+        public static final double elbowMiddle = 0;
+        public static final double shoulderSafeZone = .2;// rotations, left to right
+        public static final double shoulderSaveZoneEdge = .05;// rotations, left to right
     }
 
     public static final class Arena {

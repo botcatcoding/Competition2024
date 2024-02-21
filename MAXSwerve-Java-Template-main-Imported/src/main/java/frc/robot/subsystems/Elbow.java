@@ -20,6 +20,7 @@ public class Elbow extends SubsystemBase {
     DutyCycleOut zeroSpeedControl = new DutyCycleOut(0);
     MotionMagicDutyCycle elbowMotionControl = new MotionMagicDutyCycle(0);
     DutyCycleEncoder elbowEncoder = new DutyCycleEncoder(1);
+    double currentAngle = 0;
 
     public Elbow() {
         elbowL = new TalonFX(Constants.MechConstants.elbowLid);
@@ -70,7 +71,13 @@ public class Elbow extends SubsystemBase {
     }
 
     public void setPosition(double position) {
+        currentAngle = position;
         elbowMotionControl.Position = position;
+        elbowL.setControl(elbowMotionControl);
+    }
+
+    public void dontMove() {
+        elbowMotionControl.Position = currentAngle;
         elbowL.setControl(elbowMotionControl);
     }
 

@@ -12,12 +12,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.SetElbowByRotation;
+import frc.robot.commands.MoveToSlurpPosition;
+import frc.robot.commands.MoveToSlurpPositionWrapper;
+import frc.robot.commands.SetElbowByRotationSafe;
 import frc.robot.commands.SetShoulderByRotation;
 // import frc.robot.commands.SetElbowAndShoulderByPositionCommand;
 import frc.robot.commands.SlurpCommand;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.ShootCommandByAxis;
 
 import frc.robot.subsystems.Diagnostics;
 import frc.robot.subsystems.DriveSubsystem;
@@ -64,8 +65,11 @@ public class RobotContainer {
         // diagnosics.setDefaultCommand(rdc);
         slurp.setDefaultCommand(new SlurpCommand(0, false, false, slurp, slurpDetect));
         shooter.setDefaultCommand(new ShootCommand(0, shooter));
-        elbow.setDefaultCommand(new SetElbowByRotation(0, false, 0.01, elbow));
-        shoulder.setDefaultCommand(new SetShoulderByRotation(.25, false, shoulder));
+        elbow.setDefaultCommand(
+                new SetElbowByRotationSafe(.25, false, .01, Constants.MechConstants.shoulderSafeZone, false, shoulder,
+                        elbow));
+        shoulder.setDefaultCommand(
+                new SetShoulderByRotation(Constants.MechConstants.shoulderDefault, false, false, shoulder));
 
         // arm.setDefaultCommand(new SetElbowAndShoulderByPositionCommand(90, 0, arm));
         // rdc.ignoringDisable(true);
@@ -94,14 +98,12 @@ public class RobotContainer {
         new JoystickButton(m_mechDriver, 5).whileTrue(new SlurpCommand(-1400, true, false, slurp, slurpDetect));
         new JoystickButton(m_mechDriver, 3).whileTrue(new SlurpCommand(1200, true, false, slurp, slurpDetect));
 
-        SetShoulderByRotation shoulderToSafe = new SetShoulderByRotation(.45, true, shoulder);
-        SetElbowByRotation elbowToSlurp = new SetElbowByRotation(.15, true, .05, elbow);
-        SetShoulderByRotation shoulderToSlurp = new SetShoulderByRotation(.54, false, shoulder);
-        // SetElbowByRotation elbowToSlurpNoFinish = new SetElbowByRotation(.15, false,
-        // .05, elbow);
-
-        new JoystickButton(m_mechDriver, 4).whileTrue(elbowToSlurp
-                .deadlineWith(shoulderToSafe).andThen(shoulderToSlurp));
+        new JoystickButton(m_mechDriver, 4)
+                .whileTrue(new MoveToSlurpPositionWrapper(shoulder, elbow, m_robotDrive,
+                        m_mechDriver));
+        // new JoystickButton(m_mechDriver, 2)
+        // .whileTrue(new MoveToSlurpPosition(shoulder, elbow, m_robotDrive,
+        // m_mechDriver));
 
         // new JoystickButton(m_mechDriver, 1).whileTrue(new
         // SetElbowAndShoulderByPositionCommand(80, 150, arm));

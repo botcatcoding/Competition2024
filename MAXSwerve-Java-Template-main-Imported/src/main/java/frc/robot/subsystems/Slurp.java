@@ -105,7 +105,7 @@ public class Slurp extends SubsystemBase {
     }
 
     public static boolean slurpFieldOrient(int dpad, double yaw) {// dpad = 0,90,180,270. yaw = 0-360
-        int error = (int) (dpad - yaw);
+        int error = (int) ((360 - dpad) - yaw);
         error = (error % 360) + (error < 0 ? 360 : 0);
         if (error > 0 && error < 90) {
             return true;
