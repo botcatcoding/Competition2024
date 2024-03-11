@@ -1,5 +1,8 @@
 {
   "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
     "retained": {
       "GRIP": {
         "myBlobsReport": {
@@ -41,6 +44,9 @@
           "open": true
         }
       },
+      "Shuffleboard": {
+        "open": true
+      },
       "SmartDashboard": {
         "Field": {
           "open": true
@@ -50,10 +56,18 @@
     },
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Diagnostics": "Subsystem",
+      "/LiveWindow/DriveSubsystem": "Subsystem",
+      "/LiveWindow/Elbow": "Subsystem",
+      "/LiveWindow/Kinamatics": "Subsystem",
+      "/LiveWindow/Shooter": "Subsystem",
+      "/LiveWindow/Slurp": "Subsystem",
       "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
       "/LiveWindow/Ungrouped/DigitalInput[1]": "Digital Input",
       "/LiveWindow/Ungrouped/DigitalInput[2]": "Digital Input",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon 2 (v6) [39]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX (v6) [10]": "Motor Controller",
@@ -86,6 +100,9 @@
     }
   },
   "NetworkTables Info": {
+    "Server": {
+      "open": true
+    },
     "visible": true
   },
   "NetworkTables Settings": {

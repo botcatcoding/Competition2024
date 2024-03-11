@@ -45,7 +45,7 @@ public class SlurpCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return !slurpDetect.get() && stopIfLimitSwitch;
+        return slurpDetect.get() && stopIfLimitSwitch;
 
     }
 }

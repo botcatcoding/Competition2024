@@ -105,6 +105,7 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putData("Field", m_field);
 
         profiledPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        profiledPIDController.reset(getPose().getRotation().getRadians());
         // this is where path planner goes
         AutoBuilder.configureHolonomic(
                 this::getPose,
@@ -131,7 +132,7 @@ public class DriveSubsystem extends SubsystemBase {
         double distFromZero = Math.abs(x);
         double areaSub = distFromZero / 10000;
         area = area - areaSub;
-        SmartDashboard.putNumber("area", area);
+        // SmartDashboard.putNumber("area", area);
         double MIN_VAL = 0.02;
         double MIN_AREA = 0.0015;
         if (area < MIN_AREA) {
@@ -145,10 +146,18 @@ public class DriveSubsystem extends SubsystemBase {
         return equ;
     }
 
+    public void setPointAtYaw(boolean pay) {
+        pointAtYaw = pay;
+        if (pointAtYaw) {
+            theYaw = Kinamatics.yaw;
+        }
+    }
+
     @Override
     public void periodic() {
 
         theGyro.getYaw().refresh();
+        SmartDashboard.putNumber("gyroYaw", theGyro.getYaw().getValue());
         // Update the odometry in the periodic block
         poseEstimator.update(
                 Rotation2d.fromDegrees(theGyro.getYaw().getValue()),
@@ -211,6 +220,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void driveRobotRelative(ChassisSpeeds chassisSpeedsIn) {
 
+        SmartDashboard.putNumber("targetYaw", theYaw);
+        SmartDashboard.putNumber("poseYaw", getPose().getRotation().getRadians());
         double yawCommandToTarget = profiledPIDController.calculate(getPose().getRotation().getRadians(),
                 theYaw);
         if (pointAtYaw) {
@@ -330,15 +341,12 @@ public class DriveSubsystem extends SubsystemBase {
 
     /** Zeroes the heading of the robot. */
     public void zeroHeading() {
-        theGyro.setYaw(0);
+        // theGyro.setYaw(0);
+        // poseEstimator
     }
 
-    /**
-     * Returns the heading of the robot.
-     *
-     * @return the robot's heading in degrees, from -180 to 180
-     */
     public double getHeading() {
+        // poseEstimator.getEstimatedPosition().getRotation().getDegrees()
         return Rotation2d.fromDegrees(theGyro.getYaw().getValue()).getDegrees();
     }
 

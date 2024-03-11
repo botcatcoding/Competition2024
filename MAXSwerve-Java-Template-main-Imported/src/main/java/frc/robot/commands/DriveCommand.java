@@ -26,10 +26,13 @@ public class DriveCommand extends Command {
     @Override
     public void execute() {
 
-        double yawCommand = -MathUtil.applyDeadband(joystick.getZ() / 2, OIConstants.kDriveDeadband * 2);
+        double yawCommand = -MathUtil.applyDeadband(
+                (joystick.getZ() * joystick.getZ() * Math.signum(joystick.getZ())) / 2, OIConstants.kDriveDeadband / 2);
         driveSubsystem.drive(
-                -MathUtil.applyDeadband(joystick.getY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(joystick.getX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(joystick.getY() * joystick.getY() * Math.signum(joystick.getY()),
+                        OIConstants.kDriveDeadband / 2),
+                -MathUtil.applyDeadband(joystick.getX() * joystick.getX() * Math.signum(joystick.getX()),
+                        OIConstants.kDriveDeadband / 2),
                 yawCommand, true);
     }
 

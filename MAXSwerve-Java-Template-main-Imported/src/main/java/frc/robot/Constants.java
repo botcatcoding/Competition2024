@@ -39,7 +39,7 @@ public final class Constants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
         public static final double kMaxSpeedMetersPerSecond = 4.8;
-        public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+        public static final double kMaxAngularSpeed = 4 * Math.PI; // radians per second
 
         public static final double kDirectionSlewRate = 1.2; // radians per second
         public static final double kMagnitudeSlewRate = 3; // percent per second (1 = 100%)
@@ -144,7 +144,7 @@ public final class Constants {
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
         public static final double kPTraslation = 1;
-        public static final double kPTheta = 1;
+        public static final double kPTheta = 4;
         public static final HolonomicPathFollowerConfig kHolonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(kPTraslation, 0.0, 0.0), // Translation PID constants
                 new PIDConstants(kPTheta, 0.0, 0.0), // Rotation PID constants
@@ -165,50 +165,54 @@ public final class Constants {
         public static final double kShoulderZOffset = 0;
         public static final double kShoulderLength = .381;
 
-        public static final double shoulderDeadband = .01;
-        public static final double elbowDeadband = 0.01;
+        public static final double shoulderDeadband = .004;
+        public static final double elbowDeadband = 0.004;
 
         public static final double topIntakeSlurpSpeed = .2 * 11000;
         public static final double bottomIntakeSlurpSpeed = .2 * 11000;
 
-        public static final int shoulderRid = 9;
-        public static final int shoulderLid = 10;
+        public static final int shoulderRid = 10;
+        public static final int shoulderLid = 9;
 
         public static final int shootTR = 11;
         public static final int shootTL = 12;
-        public static final int shootBR = 13;
-        public static final int shootBL = 14;
+        public static final int shootBR = 14;
+        public static final int shootBL = 13;
 
         public static final int elbowRid = 15;
         public static final int elbowLid = 16;
 
-        public static final int topRightIntakeSparkId = 17;
-        public static final int bottomRightIntakeSparkId = 18;
-        public static final int bottomLeftIntakeSparkID = 19;
-        public static final int topLeftIntakeSparkId = 20;
+        public static final int topIntakeSparkId = 17;
+        public static final int bottomIntakeSparkId = 18;
 
         public static final double falconToAbsEncoderShoulder = (49.0) * (64.0 / 22.0);
         // elbow should be the same but double check (49)(22/64)
         public static final double falconToAbsEncoderElbow = 49.0;
 
-        public static final double shoulderEncoderZeroValue = .02;
-        public static final double elbowEncoderZeroValue = -.25;
+        public static final double shoulderEncoderZeroValue = 0.433812 + .25;
+        public static final double elbowEncoderZeroValue = -0.25319;
 
         public static final double shoulderDefault = .25;
         public static final double shoulderMiddle = .25;
         public static final double elbowMiddle = 0;
-        public static final double shoulderSafeZone = .2;// rotations, left to right
+        public static final double shoulderSafeZone = .1;// rotations, left to right
         public static final double shoulderSaveZoneEdge = .05;// rotations, left to right
+        public static final double sourceSlurp = 0.872665;
+        public static double shootSpeed = 60;
     }
 
     public static final class Arena {
-        public static final double redTargetX = 8.308467;
-        public static final double redTargetY = 1.442593;
-        public static final double redTargetZ = 1.451102 + .508;// +.508
+        public static final double redTargetX = 16.503142;
+        public static final double redTargetY = 5.54;
+        public static final double redTargetZ = 1.451102 + .400;// +.508
 
-        public static final double blueTargetX = -8.308975;
-        public static final double blueTargetY = 1.442593;
-        public static final double blueTargetZ = 1.451102 + .508;
+        public static final double blueTargetX = 0;
+        public static final double blueTargetY = 5.54;
+        public static final double blueTargetZ = 1.451102 + .400;
+
+        public static final double redSourceAngle = 60;
+
+        public static final double blueSourceAngle = -60;
 
     }
 }

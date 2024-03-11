@@ -11,22 +11,22 @@ import frc.robot.subsystems.Shoulder;
 
 public class MoveToSlurpPosition extends SequentialCommandGroup {
 
-    public MoveToSlurpPosition(boolean inverted, Shoulder s, Elbow e, DriveSubsystem ds, Joystick js) {
+    public MoveToSlurpPosition(boolean inverted, Shoulder s, Elbow e, DriveSubsystem ds) {
 
         // indivual commands
         SetShoulderByRotation shoulderToSafe = new SetShoulderByRotation(
                 Constants.MechConstants.shoulderMiddle + Constants.MechConstants.shoulderSafeZone
                         - Constants.MechConstants.shoulderSaveZoneEdge,
-                false, inverted, js, ds,
+                false, inverted, ds,
                 s);
 
-        double slurpElbow = .15;
-        double slurpShoulder = .54;
-        SetElbowByRotationSafe elbowToSlurp = new SetElbowByRotationSafe(slurpElbow, true, .05,
-                Constants.MechConstants.shoulderSafeZone, inverted, js, ds, s, e);
-        SetElbowByRotationSafe elbowToSlurpNoEnd = new SetElbowByRotationSafe(slurpElbow, false, .05,
-                Constants.MechConstants.shoulderSafeZone, inverted, js, ds, s, e);
-        SetShoulderByRotation shoulderToSlurp = new SetShoulderByRotation(slurpShoulder, false, inverted, js, ds, s);
+        double slurpElbow = .09;
+        double slurpShoulder = .52;
+        SetElbowByRotationSafe elbowToSlurp = new SetElbowByRotationSafe(slurpElbow, true, .1,
+                Constants.MechConstants.shoulderSafeZone, inverted, ds, s, e);
+        SetElbowByRotationSafe elbowToSlurpNoEnd = new SetElbowByRotationSafe(slurpElbow, false, .1,
+                Constants.MechConstants.shoulderSafeZone, inverted, ds, s, e);
+        SetShoulderByRotation shoulderToSlurp = new SetShoulderByRotation(slurpShoulder, false, inverted, ds, s);
 
         // commands running at the same time
         Command shouldToSafeDeadline = Commands.deadline(elbowToSlurp, shoulderToSafe);

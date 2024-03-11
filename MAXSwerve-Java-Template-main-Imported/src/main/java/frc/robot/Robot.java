@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
         // and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
-        // LiveWindow.enableAllTelemetry();
+        LiveWindow.enableAllTelemetry();
     }
 
     /**

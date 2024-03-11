@@ -4,30 +4,36 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AimAndSpin;
+import frc.robot.commands.AimAtSpeakerCommand;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.MoveToSlurpPosition;
 import frc.robot.commands.MoveToSlurpPositionWrapper;
 import frc.robot.commands.SetElbowByRotationSafe;
 import frc.robot.commands.SetShoulderByRotation;
-// import frc.robot.commands.SetElbowAndShoulderByPositionCommand;
 import frc.robot.commands.SlurpCommand;
+import frc.robot.commands.SlurpFromSourceWrapper;
+import frc.robot.commands.SlurpItCommandGroup;
+import frc.robot.commands.TheBigGroup;
 import frc.robot.commands.ShootCommand;
-
+import frc.robot.commands.ShootCommandGroup;
+import frc.robot.subsystems.AudioSubsytem;
 import frc.robot.subsystems.Diagnostics;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elbow;
+import frc.robot.subsystems.Kinamatics;
 import frc.robot.subsystems.Slurp;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shoulder;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -43,6 +49,7 @@ public class RobotContainer {
     private final Slurp slurp = new Slurp();
     private final Elbow elbow = new Elbow();
     private final Shoulder shoulder = new Shoulder();
+    private Kinamatics kinamatics;
 
     final DigitalInput slurpDetect = new DigitalInput(2);
 
@@ -54,26 +61,23 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-
-        // NamedCommands.registerCommand("slurp", Slurp.slurp(slurp));
-        NamedCommands.registerCommand("shoot", Shooter.shoot(shooter));
-        // NamedCommands.registerCommand("gotoSlurp", Arm.gotoSlurpPosition(arm));
+        AudioSubsytem.init();
+        AudioSubsytem.playToneTime(440, 5);
+        kinamatics = new Kinamatics(m_robotDrive, false);
 
         // Configure the button bindings
         configureButtonBindings();
         // RunDiagnosticsCommand rdc = new RunDiagnosticsCommand(diagnosics);
         // diagnosics.setDefaultCommand(rdc);
-        slurp.setDefaultCommand(new SlurpCommand(0, false, false, slurp, slurpDetect));
-        shooter.setDefaultCommand(new ShootCommand(0, shooter));
+        // rdc.ignoringDisable(true);
+        slurp.setDefaultCommand(new SlurpCommand(0.0, false, false, slurp, slurpDetect));
+        shooter.setDefaultCommand(new ShootCommand(shooter, 0, false, false));
         elbow.setDefaultCommand(
-                new SetElbowByRotationSafe(.25, false, .01, Constants.MechConstants.shoulderSafeZone, false, shoulder,
+                new SetElbowByRotationSafe(-.25, false, .01, Constants.MechConstants.shoulderSafeZone, false, shoulder,
                         elbow));
         shoulder.setDefaultCommand(
                 new SetShoulderByRotation(Constants.MechConstants.shoulderDefault, false, false, shoulder));
 
-        // arm.setDefaultCommand(new SetElbowAndShoulderByPositionCommand(90, 0, arm));
-        // rdc.ignoringDisable(true);
-        // Configure default commands
         m_robotDrive.setDefaultCommand(new DriveCommand(m_robotDrive,
                 m_driverController));
     }
@@ -88,25 +92,34 @@ public class RobotContainer {
      * {@link JoystickButton}.
      */
     private void configureButtonBindings() {
-        // new JoystickButton(m_driverController, 1)
-        // .whileTrue(new AimAndDriveCommand(m_robotDrive, arm, m_driverController));
-        new JoystickButton(m_mechDriver, 6).whileTrue(new ShootCommand(1,
-                shooter));
-        // new JoystickButton(m_driverController, 10).whileTrue(new
-        // ShootCommandByAxis(m_driverController,
-        // shooter));
-        new JoystickButton(m_mechDriver, 5).whileTrue(new SlurpCommand(-1400, true, false, slurp, slurpDetect));
-        new JoystickButton(m_mechDriver, 3).whileTrue(new SlurpCommand(1200, true, false, slurp, slurpDetect));
+        // driver
+        new JoystickButton(m_driverController, 2).whileTrue(new RunCommand(() -> m_robotDrive.zeroHeading()));
+        new JoystickButton(m_driverController, 1).whileTrue(new RunCommand(() -> m_robotDrive.setPointAtYaw(true)))
+                .whileFalse(new RunCommand(() -> m_robotDrive.setPointAtYaw(false)));
+        // buttons
+        new JoystickButton(m_mechDriver, 6)
+                .whileTrue(new TheBigGroup(slurp, shooter, elbow, shoulder, kinamatics, slurpDetect));
+        new JoystickButton(m_mechDriver, 5).whileTrue(new SlurpCommand(-6000, true, false, slurp, slurpDetect));
+        new JoystickButton(m_mechDriver, 3).whileTrue(new SlurpCommand(6000, true, false, slurp, slurpDetect));
+        new JoystickButton(m_mechDriver, 4).whileTrue(new SlurpItCommandGroup(slurp, slurpDetect, shooter));
+        new JoystickButton(m_mechDriver, 2)
+                .whileTrue(new AimAndSpin(shoulder, elbow, kinamatics, shooter));
 
-        new JoystickButton(m_mechDriver, 4)
-                .whileTrue(new MoveToSlurpPositionWrapper(shoulder, elbow, m_robotDrive,
-                        m_mechDriver));
-        // new JoystickButton(m_mechDriver, 2)
-        // .whileTrue(new MoveToSlurpPosition(shoulder, elbow, m_robotDrive,
-        // m_mechDriver));
-
-        // new JoystickButton(m_mechDriver, 1).whileTrue(new
-        // SetElbowAndShoulderByPositionCommand(80, 150, arm));
+        // POV
+        // new POVButton(m_mechDriver, 0).whileTrue(new
+        // MoveToSlurpPositionWrapper(shoulder, elbow, m_robotDrive,
+        // m_mechDriver, slurpDetect, slurp));
+        // new POVButton(m_mechDriver, 90).whileTrue(new
+        // MoveToSlurpPositionWrapper(shoulder, elbow, m_robotDrive,
+        // m_mechDriver, slurpDetect, slurp));
+        // new POVButton(m_mechDriver, 180).whileTrue(new
+        // MoveToSlurpPositionWrapper(shoulder, elbow, m_robotDrive,
+        // m_mechDriver, slurpDetect, slurp));
+        // new POVButton(m_mechDriver, 270).whileTrue(new
+        // MoveToSlurpPositionWrapper(shoulder, elbow, m_robotDrive,
+        // m_mechDriver, slurpDetect, slurp));
+        new JoystickButton(m_mechDriver, 1)
+                .whileTrue(new SlurpFromSourceWrapper(shoulder, elbow, m_robotDrive, slurp, slurpDetect));
     }
 
     /**

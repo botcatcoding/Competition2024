@@ -11,68 +11,46 @@ import frc.robot.Constants;
 import frc.robot.commands.SlurpCommand;
 
 public class Slurp extends SubsystemBase {
-    CANSparkMax intakeTL;
-    CANSparkMax intakeTR;
-    CANSparkMax intakeBL;
-    CANSparkMax intakeBR;
+    CANSparkMax intakeT;
+    CANSparkMax intakeB;
 
     private SparkPIDController intakeTRPID;
     private SparkPIDController intakeBRPID;
 
     public Slurp() {
 
-        intakeTL = new CANSparkMax(Constants.MechConstants.topLeftIntakeSparkId, MotorType.kBrushless);
-        intakeTR = new CANSparkMax(Constants.MechConstants.topRightIntakeSparkId, MotorType.kBrushless);
-        intakeBL = new CANSparkMax(Constants.MechConstants.bottomLeftIntakeSparkID, MotorType.kBrushless);
-        intakeBR = new CANSparkMax(Constants.MechConstants.bottomRightIntakeSparkId, MotorType.kBrushless);
+        intakeT = new CANSparkMax(Constants.MechConstants.topIntakeSparkId, MotorType.kBrushless);
+        intakeB = new CANSparkMax(Constants.MechConstants.bottomIntakeSparkId, MotorType.kBrushless);
 
-        intakeTL.restoreFactoryDefaults();
-        intakeTR.restoreFactoryDefaults();
-        intakeBL.restoreFactoryDefaults();
-        intakeBR.restoreFactoryDefaults();
+        intakeT.restoreFactoryDefaults();
+        intakeB.restoreFactoryDefaults();
 
-        intakeTL.setSmartCurrentLimit(40);
-        intakeTR.setSmartCurrentLimit(40);
-        intakeBL.setSmartCurrentLimit(40);
-        intakeBR.setSmartCurrentLimit(40);
+        intakeT.setSmartCurrentLimit(40);
+        intakeB.setSmartCurrentLimit(40);
 
-        double p = 0.00009999999747378752;
-        double i = 9.99999993922529e-9;
-        double d = 0;
+        double p = 0.00005;
+        double i = 0.000001;
+        double d = 0.0001;
 
-        intakeTL.getPIDController().setP(p);
-        intakeTR.getPIDController().setP(p);
-        intakeBL.getPIDController().setP(p);
-        intakeBR.getPIDController().setP(p);
+        intakeT.getPIDController().setP(p);
+        intakeB.getPIDController().setP(p);
 
-        intakeTL.getPIDController().setI(i);
-        intakeTR.getPIDController().setI(i);
-        intakeBL.getPIDController().setI(i);
-        intakeBR.getPIDController().setI(i);
+        intakeT.getPIDController().setI(i);
+        intakeB.getPIDController().setI(i);
 
-        intakeTL.getPIDController().setD(d);
-        intakeTR.getPIDController().setD(d);
-        intakeBL.getPIDController().setD(d);
-        intakeBR.getPIDController().setD(d);
+        intakeT.getPIDController().setD(d);
+        intakeB.getPIDController().setD(d);
 
-        intakeTL.setIdleMode(IdleMode.kBrake);
-        intakeTR.setIdleMode(IdleMode.kBrake);
-        intakeBL.setIdleMode(IdleMode.kBrake);
-        intakeBR.setIdleMode(IdleMode.kBrake);
+        intakeT.setIdleMode(IdleMode.kBrake);
+        intakeB.setIdleMode(IdleMode.kBrake);
 
-        intakeBL.setInverted(true);
-        intakeBL.follow(intakeBR);
+        intakeTRPID = intakeT.getPIDController();
+        intakeBRPID = intakeB.getPIDController();
 
-        intakeTL.setInverted(true);
-        intakeTL.follow(intakeTR);
+        intakeT.setInverted(true);
 
-        intakeTRPID = intakeTR.getPIDController();
-        intakeBRPID = intakeBR.getPIDController();
-
-        intakeTL.burnFlash();
-        intakeTR.burnFlash();
-        intakeBL.burnFlash();
-        intakeBR.burnFlash();
+        intakeT.burnFlash();
+        intakeB.burnFlash();
         // 0.00009999999747378752 kpid p
         // 9.99999993922529e-9 kpid i
         // feedl = new TalonFX(12);
@@ -83,14 +61,14 @@ public class Slurp extends SubsystemBase {
 
     public void setFeedVelo(double speed) {
         intakeTRPID.setReference(speed, CANSparkMax.ControlType.kVelocity);
-        intakeBRPID.setReference(-speed, CANSparkMax.ControlType.kVelocity);
+        intakeBRPID.setReference(speed, CANSparkMax.ControlType.kVelocity);
     }
 
     public void setFeedPercent(double speed) {
 
         // intakeTL.se;
-        intakeBR.set(-speed);
-        intakeTR.set(speed);
+        intakeB.set(speed);
+        intakeT.set(speed);
         // feedl.set(TalonFXControlMode.PercentOutput,speed);
         // feedr.set(TalonFXControlMode.PercentOutput,-speed);
         // //feed.set(speed);
