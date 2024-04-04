@@ -30,6 +30,7 @@ import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.mech.AimAndSpin;
 import frc.robot.commands.mech.CenterNoteConditional;
 import frc.robot.commands.mech.ClimberCommands;
+import frc.robot.commands.mech.ImHoldingOutForAHero;
 import frc.robot.commands.mech.MoveToSlurpPositionWrapper;
 import frc.robot.commands.mech.AmpScoreCommandGroupWrapper;
 import frc.robot.commands.mech.SetElbowByRotationSafe;
@@ -175,6 +176,11 @@ public class RobotContainer {
         // DriveToNote(m_robotDrive));
 
         // AXIS
+        BooleanEvent shouldBucket = m_mechDriver.axisGreaterThan(5, .5,
+                CommandScheduler.getInstance().getActiveButtonLoop());
+        shouldBucket.castTo(Trigger::new)
+                .whileTrue(new ImHoldingOutForAHero(shooter, elbow, shoulder, slurp, slurpDetect, kinamatics));
+
         BooleanEvent shouldClimbUp = m_mechDriver.axisLessThan(1, -.5,
                 CommandScheduler.getInstance().getActiveButtonLoop());
         BooleanEvent shouldClimbDown = m_mechDriver.axisGreaterThan(1, .5,

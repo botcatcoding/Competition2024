@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.commands.mech.ShootToThrill;
 import frc.robot.commands.mech.ShutUpAndDanceCmdGroup;
@@ -110,11 +111,20 @@ public class AutoManager extends Command {
     }
 
     public void initOneNote() {
+        ShootToThrill big1 = new ShootToThrill(ds, lighting, sl, sho, e, sh, k, sd, true, true, true);
+        WaitCommand waitup = new WaitCommand(8.14159);
+        Command chero1 = rc.constructChoreoCommand("1 note.1");
+
+        commands.add(big1);
+        commands.add(waitup);
+        commands.add(chero1);
 
     }
 
     public void initNothing() {
 
+        ShootToThrill big1 = new ShootToThrill(ds, lighting, sl, sho, e, sh, k, sd, true, true, true);
+        commands.add(big1);
     }
 
     public void initFourNoteClose() {
@@ -122,6 +132,7 @@ public class AutoManager extends Command {
         Command chero1 = rc.constructChoreoCommand("4 note close.1");
         Command chero2 = rc.constructChoreoCommand("4 note close.2");
         Command chero3 = rc.constructChoreoCommand("4 note close.3");
+        Command chero4 = rc.constructChoreoCommand("4 note close.4");
         ShutUpAndDanceCmdGroup suadcg1 = new ShutUpAndDanceCmdGroup(lighting, ds, e, sh, sd, sl, sho);
         ShutUpAndDanceCmdGroup suadcg2 = new ShutUpAndDanceCmdGroup(lighting, ds, e, sh, sd, sl, sho);
         ShutUpAndDanceCmdGroup suadcg3 = new ShutUpAndDanceCmdGroup(lighting, ds, e, sh, sd, sl, sho);
@@ -143,6 +154,7 @@ public class AutoManager extends Command {
         commands.add(big3.alongWith(chero3));
         commands.add(suadcg3);
         commands.add(big4);
+        commands.add(chero4);
     }
 
     public void initThreeNoteFarSR() {
