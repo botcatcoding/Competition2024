@@ -5,9 +5,17 @@ import java.io.OutputStreamWriter;
 
 import com.fazecast.jSerialComm.SerialPort;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Lighting {
+public class Lighting extends SubsystemBase {
+
+    public Lighting() {
+        super();
+    }
+
     static SerialPort myPort;
     static BufferedWriter out;
     static Alliance knownAlliance = null;
@@ -16,7 +24,53 @@ public class Lighting {
     static boolean disabled = false;
     static boolean canError = false;
     static String knownMode = "";
+    static String currentNotification = "";
+    static String knownNotification = "";
     static boolean wasTelop = false;
+
+    public static Command constructNotificationCommand(Lighting lighting, String notification) {
+        return new NotificationCommand(lighting, notification);
+    }
+
+    @Override
+    public void periodic() {
+        try {
+            periodic(DriverStation.isDSAttached(), DriverStation.isEnabled(),
+                    DriverStation.isTeleop(),
+                    DriverStation.isAutonomous(), DriverStation.getAlliance().get());
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+    }
+
+    static class NotificationCommand extends Command {
+        String noti;
+
+        public NotificationCommand(Lighting lighting, String notification) {
+            addRequirements(lighting);
+            noti = notification;
+        }
+
+        @Override
+        public void initialize() {
+            currentNotification = noti;
+        }
+
+        @Override
+        public void execute() {
+
+        }
+
+        @Override
+        public void end(boolean interrupted) {
+        }
+
+        @Override
+        public boolean isFinished() {
+            return true;
+
+        }
+    }
 
     static void reset() {
         if (System.currentTimeMillis() - lastTryConnect > 10000
@@ -56,7 +110,8 @@ public class Lighting {
             out.write(str + "\n");
             out.flush();
         } catch (Exception e) {
-            System.err.println("lighting error");
+            e.printStackTrace();
+            // System.err.println("lighting error");
             reset();
         }
     }
@@ -71,7 +126,7 @@ public class Lighting {
         // System.out.println(timeLeft);
         disabled = !isEnabled;
         String mode = "E";
-        if (!canError) {
+        if (canError) {
             mode = "C";
         } else {
             if (isEnabled) {
@@ -91,9 +146,14 @@ public class Lighting {
         if (!dsAttached) {
             alliance = null;
         }
-        if (loops % 25 == 0) {
+        if (!knownNotification.equals(currentNotification)) {
+            write("N" + currentNotification);
+            knownNotification = currentNotification;
+        }
+        if (loops % 100 == 0) {
             knownAlliance = null;
             knownMode = "";
+            knownNotification = "";
         }
         sendAlliance(alliance);
         sendMode(mode);

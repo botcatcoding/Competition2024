@@ -7,11 +7,10 @@ import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.ShootCommand;
 
 public class Shooter extends SubsystemBase {
 
@@ -53,8 +52,8 @@ public class Shooter extends SubsystemBase {
         shootBL.setNeutralMode(NeutralModeValue.Coast);
         shootBR.setNeutralMode(NeutralModeValue.Coast);
 
-        shootBR.setControl(new Follower(shootTR.getDeviceID(), false));
-        shootBL.setControl(new Follower(shootTL.getDeviceID(), false));
+        shootBR.setControl(new Follower(shootTR.getDeviceID(), true));
+        shootBL.setControl(new Follower(shootTL.getDeviceID(), true));
         // shootBL.setControl(new Follower(shootTL.getDeviceID(), false));
 
     }
@@ -62,12 +61,15 @@ public class Shooter extends SubsystemBase {
     double targetVelocity;
 
     public void setShooterVelocity(double velocityL, double velocityR) {
+        SmartDashboard.putNumber("ShootLeft", velocityL);
+        SmartDashboard.putNumber("ShootRight", velocityR);
         targetVelocity = -velocityL;
         // percentOutputControlL.Output = speedl;
         // percentOutputControlR.Output = speedr;
         shooterVelocityControlL.Velocity = -velocityL;
         shooterVelocityControlR.Velocity = velocityR;
         shootTL.setControl(shooterVelocityControlL);
+        // shooterVelocityControlR.Velocity = 0;
         shootTR.setControl(shooterVelocityControlR);
 
     }
@@ -91,5 +93,22 @@ public class Shooter extends SubsystemBase {
     // public static Command stopshoot(Shooter shoot) {
     // return new ShootCommand(shoot, 0, false);
     // }
+    double maxSpeed = -100;
+    Timer speedreset = new Timer();
 
+    @Override
+    public void periodic() {
+        // speedreset.start();
+        // if (speedreset.get() > 5) {
+        // speedreset.reset();
+        // maxSpeed = -100;
+        // // System.out.println("reset");
+        // } else {
+        // SmartDashboard.putNumber("max speed", maxSpeed);
+        // }
+        // if (maxSpeed < shootTL.getVelocity().refresh().getValue()) {
+        // maxSpeed = shootTL.getVelocity().refresh().getValue();
+        // }
+
+    }
 }

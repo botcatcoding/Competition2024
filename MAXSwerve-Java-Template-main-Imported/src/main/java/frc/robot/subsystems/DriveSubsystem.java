@@ -66,7 +66,7 @@ public class DriveSubsystem extends SubsystemBase {
     private double m_prevTime = WPIUtilJNI.now() * 1e-6;
     public boolean pointAtYaw = false;
     public double theYaw = 0;
-    ProfiledPIDController profiledPIDController = new ProfiledPIDController(AutoConstants.kPTheta, 0, 0,
+    public ProfiledPIDController profiledPIDController = new ProfiledPIDController(AutoConstants.kPTheta, 0, 0,
             new TrapezoidProfile.Constraints(DriveConstants.kMaxAngularSpeed, DriveConstants.kMaxAngularSpeed * 2));
     // Odometry class for tracking robot pose
 
@@ -107,6 +107,7 @@ public class DriveSubsystem extends SubsystemBase {
         profiledPIDController.enableContinuousInput(-Math.PI, Math.PI);
         profiledPIDController.reset(getPose().getRotation().getRadians());
         // this is where path planner goes
+
         AutoBuilder.configureHolonomic(
                 this::getPose,
                 this::resetPose,
@@ -146,6 +147,11 @@ public class DriveSubsystem extends SubsystemBase {
         return equ;
     }
 
+    public boolean isPostioned(double deadband) {
+
+        return Math.abs(profiledPIDController.getPositionError()) < Rotation2d.fromDegrees(deadband).getRadians();
+    }
+
     public void setPointAtYaw(boolean pay) {
         pointAtYaw = pay;
         if (pointAtYaw) {
@@ -153,9 +159,24 @@ public class DriveSubsystem extends SubsystemBase {
         }
     }
 
+    public void resetProfiled() {
+        profiledPIDController.reset(poseEstimator.getEstimatedPosition().getRotation().getRadians());
+    }
+
     @Override
     public void periodic() {
-
+        if (DriverStation.isDisabled()) {
+            theGyro.setYaw(poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+            poseEstimator.resetPosition(
+                    Rotation2d.fromDegrees(theGyro.getYaw().getValue()),
+                    new SwerveModulePosition[] {
+                            m_frontLeft.getPosition(),
+                            m_frontRight.getPosition(),
+                            m_rearLeft.getPosition(),
+                            m_rearRight.getPosition()
+                    },
+                    getPose());
+        }
         theGyro.getYaw().refresh();
         SmartDashboard.putNumber("gyroYaw", theGyro.getYaw().getValue());
         // Update the odometry in the periodic block
@@ -174,7 +195,7 @@ public class DriveSubsystem extends SubsystemBase {
             Pose2d limeLightBotPose = LimelightHelpers.getBotPose2d(Constants.aLimelightName);
             Pose2d limeLightCorrected = new Pose2d(limeLightBotPose.getX() + Constants.limeLightxOff,
                     limeLightBotPose.getY() + Constants.limeLightyOff, limeLightBotPose.getRotation());
-            double std = areaToStd(LimelightHelpers.getTA(Constants.aLimelightName) / 100,
+            double std = areaToStd(LimelightHelpers.getTA(Constants.aLimelightName) / 200,
                     LimelightHelpers.getTX(Constants.aLimelightName));
             poseEstimator.addVisionMeasurement(limeLightCorrected, snapshotTime,
                     VecBuilder.fill(std, std, Units.degreesToRadians(50)));
@@ -341,7 +362,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /** Zeroes the heading of the robot. */
     public void zeroHeading() {
-        // theGyro.setYaw(0);
+        theGyro.setYaw(0);
         // poseEstimator
     }
 

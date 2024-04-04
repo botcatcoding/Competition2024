@@ -4,11 +4,16 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.SlurpCommand;
+import frc.robot.commands.mech.SlurpCommand;
+import frc.utils.SwerveUtils;
 
 public class Slurp extends SubsystemBase {
     CANSparkMax intakeT;
@@ -28,9 +33,10 @@ public class Slurp extends SubsystemBase {
         intakeT.setSmartCurrentLimit(40);
         intakeB.setSmartCurrentLimit(40);
 
-        double p = 0.00005;
-        double i = 0.000001;
-        double d = 0.0001;
+        double p = 0.00004;
+        double i = 4.5e-7;
+        double d = 0;
+        double ff = 7e-7;
 
         intakeT.getPIDController().setP(p);
         intakeB.getPIDController().setP(p);
@@ -40,6 +46,9 @@ public class Slurp extends SubsystemBase {
 
         intakeT.getPIDController().setD(d);
         intakeB.getPIDController().setD(d);
+
+        intakeT.getPIDController().setFF(ff);
+        intakeB.getPIDController().setFF(ff);
 
         intakeT.setIdleMode(IdleMode.kBrake);
         intakeB.setIdleMode(IdleMode.kBrake);
@@ -82,7 +91,13 @@ public class Slurp extends SubsystemBase {
         return new SlurpCommand(0, false, false, slurp, slurpDectect);
     }
 
-    public static boolean slurpFieldOrient(int dpad, double yaw) {// dpad = 0,90,180,270. yaw = 0-360
+    public static boolean slurpFieldOrient(int dpad, double yaw) {// dpad = 0,90,180,270. yaw =
+                                                                  // 0-360
+        boolean isRedAlliance = DriverStation.getAlliance().get().equals(Alliance.Red);
+        if (!isRedAlliance) {
+            yaw = yaw + 180;
+            yaw = Rotation2d.fromRadians(SwerveUtils.WrapAngle(Rotation2d.fromDegrees(yaw).getRadians())).getDegrees();
+        }
         int error = (int) ((360 - dpad) - yaw);
         error = (error % 360) + (error < 0 ? 360 : 0);
         if (error > 0 && error < 90) {

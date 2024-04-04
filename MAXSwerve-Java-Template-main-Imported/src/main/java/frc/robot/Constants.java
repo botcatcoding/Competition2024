@@ -27,7 +27,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
     public static final String aLimelightName = "limelight";
-    public static final String aOrangelightName = "orangelight";
+    public static final String aOrangelightName = "limelight-orange";
     // public static final Transform2d limeLightFieldOffset = new Transform2d(16.541
     // / 2, 8.1026 / 2, new Rotation2d());
     public static final double limeLightxOff = 16.541 / 2;
@@ -41,9 +41,9 @@ public final class Constants {
         public static final double kMaxSpeedMetersPerSecond = 4.8;
         public static final double kMaxAngularSpeed = 4 * Math.PI; // radians per second
 
-        public static final double kDirectionSlewRate = 1.2; // radians per second
-        public static final double kMagnitudeSlewRate = 3; // percent per second (1 = 100%)
-        public static final double kRotationalSlewRate = 3; // percent per second (1 = 100%)
+        public static final double kDirectionSlewRate = 2; // radians per second
+        public static final double kMagnitudeSlewRate = 5; // percent per second (1 = 100%)
+        public static final double kRotationalSlewRate = 5; // percent per second (1 = 100%)
 
         // Chassis configuration
         public static final double kTrackWidth = Units.inchesToMeters(26.5);
@@ -91,7 +91,7 @@ public final class Constants {
 
         // Calculations required for driving motor conversion factors and feed forward
         public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-        public static final double kWheelDiameterMeters = 0.0762;
+        public static final double kWheelDiameterMeters = 0.073;
         public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
         // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
         // teeth on the bevel pinion
@@ -144,7 +144,7 @@ public final class Constants {
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
         public static final double kPTraslation = 1;
-        public static final double kPTheta = 4;
+        public static final double kPTheta = 5;
         public static final HolonomicPathFollowerConfig kHolonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(kPTraslation, 0.0, 0.0), // Translation PID constants
                 new PIDConstants(kPTheta, 0.0, 0.0), // Rotation PID constants
@@ -166,49 +166,50 @@ public final class Constants {
         public static final double kShoulderLength = .381;
 
         public static final double shoulderDeadband = .004;
-        public static final double elbowDeadband = 0.004;
+        public static final double elbowDeadband = 0.002;
 
         public static final double topIntakeSlurpSpeed = .2 * 11000;
         public static final double bottomIntakeSlurpSpeed = .2 * 11000;
 
-        public static final int shoulderRid = 10;
-        public static final int shoulderLid = 9;
+        public static final int shoulderRid = 9;
+        public static final int shoulderLid = 10;
 
-        public static final int shootTR = 11;
-        public static final int shootTL = 12;
-        public static final int shootBR = 14;
-        public static final int shootBL = 13;
+        public static final int shootTR = 12;
+        public static final int shootTL = 11;
+        public static final int shootBR = 13;
+        public static final int shootBL = 14;
 
         public static final int elbowRid = 15;
         public static final int elbowLid = 16;
 
-        public static final int topIntakeSparkId = 17;
-        public static final int bottomIntakeSparkId = 18;
+        public static final int topIntakeSparkId = 18;
+        public static final int bottomIntakeSparkId = 17;
 
         public static final double falconToAbsEncoderShoulder = (49.0) * (64.0 / 22.0);
         // elbow should be the same but double check (49)(22/64)
-        public static final double falconToAbsEncoderElbow = 49.0;
+        public static final double falconToAbsEncoderElbow = 7.0 * 3.0 * 4.0;
 
-        public static final double shoulderEncoderZeroValue = 0.433812 + .25;
-        public static final double elbowEncoderZeroValue = -0.25319;
+        public static final double shoulderEncoderZeroValue = 0.105 + .25;
+        public static final double elbowEncoderZeroValue = 0.581123;
 
-        public static final double shoulderDefault = .25;
+        public static final double shoulderDefault = .285;
         public static final double shoulderMiddle = .25;
         public static final double elbowMiddle = 0;
-        public static final double shoulderSafeZone = .1;// rotations, left to right
+        public static final double shoulderSafeZone = .10;// rotations, left to right
         public static final double shoulderSaveZoneEdge = .05;// rotations, left to right
         public static final double sourceSlurp = 0.872665;
         public static double shootSpeed = 60;
+        public static double shootSpeedClose = 50;
     }
 
     public static final class Arena {
         public static final double redTargetX = 16.503142;
         public static final double redTargetY = 5.54;
-        public static final double redTargetZ = 1.451102 + .400;// +.508
+        public static final double redTargetZ = 1.451102 + .5;// +.508
 
         public static final double blueTargetX = 0;
         public static final double blueTargetY = 5.54;
-        public static final double blueTargetZ = 1.451102 + .400;
+        public static final double blueTargetZ = 1.451102 + .5;
 
         public static final double redSourceAngle = 60;
 
