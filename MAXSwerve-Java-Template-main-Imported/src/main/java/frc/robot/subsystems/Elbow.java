@@ -74,6 +74,16 @@ public class Elbow extends SubsystemBase {
         resetTimer.start();
     }
 
+    public void setBrake(boolean brake) {
+        if (brake) {
+            elbowL.setNeutralMode(NeutralModeValue.Brake);
+            elbowR.setNeutralMode(NeutralModeValue.Brake);
+        } else {
+            elbowL.setNeutralMode(NeutralModeValue.Coast);
+            elbowR.setNeutralMode(NeutralModeValue.Coast);
+        }
+    }
+
     public void applyConfigurationClimbSlow() {
         elbowMotionMagic.MotionMagicCruiseVelocity = 2;
         elbowMotionMagic.MotionMagicAcceleration = 1;

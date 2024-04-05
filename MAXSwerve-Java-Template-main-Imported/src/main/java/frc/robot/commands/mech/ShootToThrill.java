@@ -33,11 +33,11 @@ public class ShootToThrill extends DebugedSequentialCommandGroup {
 
             addCommands(aimAndSpin, aimAndShoot);
         } else {
-            AimAtSpeakerCommand aasc = new AimAtSpeakerCommand(ds, sh, e, k, true, 20);
+            AimAtSpeakerCommand aasc = new AimAtSpeakerCommand(ds, sh, e, k, true, 10);
             ShootCommandWithLength spinUp = new ShootCommandWithLength(sho, k, true);
 
             ShootCommandGroup scg = new ShootCommandGroup(sho, sl, sd, k, ss);
-            AimAtSpeakerCommand aascns = new AimAtSpeakerCommand(ds, sh, e, k, false, 20);
+            AimAtSpeakerCommand aascns = new AimAtSpeakerCommand(ds, sh, e, k, false, 10);
 
             Command aimAndShoot = scg.deadlineWith(aascns, shootNotification);
             Command aimAndSpin = aasc.deadlineWith(spinUp, spinNotification);

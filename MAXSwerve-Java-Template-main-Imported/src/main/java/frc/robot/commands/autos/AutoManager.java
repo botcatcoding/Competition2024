@@ -2,8 +2,6 @@ package frc.robot.commands.autos;
 
 import java.util.LinkedList;
 
-import com.choreo.lib.Choreo;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;

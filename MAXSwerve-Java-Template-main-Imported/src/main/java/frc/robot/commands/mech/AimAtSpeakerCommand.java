@@ -1,5 +1,6 @@
 package frc.robot.commands.mech;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -15,6 +16,7 @@ public class AimAtSpeakerCommand extends Command {
     Kinamatics kinamatics;
     boolean shouldStop;
     double dd;
+    Timer justShootTimer = new Timer();
 
     public AimAtSpeakerCommand(DriveSubsystem ds, Shoulder sh, Elbow e, Kinamatics k, boolean ss,
             double driveDeadband) {
@@ -30,6 +32,7 @@ public class AimAtSpeakerCommand extends Command {
 
     @Override
     public void initialize() {
+        justShootTimer.start();
     }
 
     @Override
@@ -61,8 +64,9 @@ public class AimAtSpeakerCommand extends Command {
             elbowDead = elbowDead * 2;
             shoulderDeadband = shoulderDeadband * 2;
         }
-        return shouldStop && shoulder.isPostioned(kinamatics.shoulderRotation, shoulderDeadband)
-                && elbow.isPostioned(kinamatics.elbowRotation, elbowDead) && driveSubsystem.isPostioned(dd);
+        return shouldStop && ((shoulder.isPostioned(kinamatics.shoulderRotation, shoulderDeadband)
+                && elbow.isPostioned(kinamatics.elbowRotation, elbowDead) && driveSubsystem.isPostioned(dd))
+                || justShootTimer.get() > Math.E);
     }
 
 }

@@ -78,6 +78,16 @@ public class Shoulder extends SubsystemBase {
         shoulderR.getConfigurator().apply(shoulderMotionMagic);
     }
 
+    public void setBrake(boolean brake) {
+        if (brake) {
+            shoulderL.setNeutralMode(NeutralModeValue.Brake);
+            shoulderR.setNeutralMode(NeutralModeValue.Brake);
+        } else {
+            shoulderL.setNeutralMode(NeutralModeValue.Coast);
+            shoulderR.setNeutralMode(NeutralModeValue.Coast);
+        }
+    }
+
     Timer resetTimer = new Timer();
 
     @Override

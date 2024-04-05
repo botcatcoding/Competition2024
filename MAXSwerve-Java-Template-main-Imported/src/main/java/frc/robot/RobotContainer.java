@@ -39,6 +39,7 @@ import frc.robot.commands.mech.ShootCommand;
 import frc.robot.commands.mech.ShootToThrill;
 import frc.robot.commands.mech.ShutUpAndDanceCmdGroup;
 import frc.robot.commands.mech.SlurpCommand;
+import frc.robot.commands.mech.Stop;
 import frc.robot.commands.mech.ThinkAboutItAndSlurp;
 import frc.robot.subsystems.AudioSubsytem;
 import frc.robot.subsystems.Diagnostics;
@@ -68,6 +69,7 @@ public class RobotContainer {
         private final Lighting lighting = new Lighting();
         private Kinamatics kinamatics = new Kinamatics(m_robotDrive);;
         public final DigitalInput slurpDetect = new DigitalInput(2);
+        public final DigitalInput stopItRightNowBeforeIStopYouNow = new DigitalInput(3);
         AutoManager autoCommand = new AutoManager(this, lighting, m_robotDrive, slurp, shooter, elbow, shoulder,
                         kinamatics,
                         slurpDetect);
@@ -130,6 +132,10 @@ public class RobotContainer {
 
                 Trigger slurpTrigger = new Trigger(slurpDetect::get);
                 slurpTrigger.onTrue(new ThinkAboutItAndSlurp(lighting, slurp, slurpDetect, shooter));
+
+                Trigger brakeTrigger = new Trigger(stopItRightNowBeforeIStopYouNow::get);
+                brakeTrigger.onTrue(new Stop(elbow, shoulder, true));
+                brakeTrigger.onFalse(new Stop(elbow, shoulder, false));
 
                 autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
                 SmartDashboard.putData("Auto Mode", autoChooser);
