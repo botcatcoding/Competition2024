@@ -16,6 +16,7 @@ public class LookingForLovev21 extends Command {
 
     PIDController turnController;
     double maximumX = 8;
+    double test = 0;
 
     public LookingForLovev21(DriveSubsystem ds) {
         addRequirements(ds);

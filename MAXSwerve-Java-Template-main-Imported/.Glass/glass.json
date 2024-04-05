@@ -1,11 +1,5 @@
 {
   "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
-    "Retained Values": {
-      "open": false
-    },
     "retained": {
       "GRIP": {
         "myBlobsReport": {
@@ -127,6 +121,7 @@
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
-    "serverTeam": "10.1.12.2"
+    "serverTeam": "10.1.12.2",
+    "visible": false
   }
 }

@@ -205,11 +205,11 @@ public final class Constants {
     public static final class Arena {
         public static final double redTargetX = 16.503142;
         public static final double redTargetY = 5.54;
-        public static final double redTargetZ = 1.451102 + .5;// +.508
+        public static final double redTargetZ = 1.451102 + .50;// +.508
 
         public static final double blueTargetX = 0;
         public static final double blueTargetY = 5.54;
-        public static final double blueTargetZ = 1.451102 + .5;
+        public static final double blueTargetZ = 1.451102 + .50;
 
         public static final double redSourceAngle = 60;
 

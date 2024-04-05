@@ -2,6 +2,8 @@ package frc.robot.commands.autos;
 
 import java.util.LinkedList;
 
+import com.choreo.lib.Choreo;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -87,6 +89,11 @@ public class AutoManager extends Command {
     String selectedAuto = "INVALID";
 
     public void setAuto(String auto) {// "Nothing", "One note, run", "Close", "Stage Left Far", "Stage Right Far"
+        // System.out.println(d);
+        if (auto.equals(selectedAuto)) {
+            return;
+        }
+        commands.clear();
         if (auto.equals("Nothing")) {
             initNothing();
             selectedAuto = auto;
@@ -100,10 +107,12 @@ public class AutoManager extends Command {
             initThreeNoteFarSL();
             selectedAuto = auto;
         } else if (auto.equals("Stage Right Far")) {
-            initThreeNoteFarSL();
+            initThreeNoteFarSR();
             selectedAuto = auto;
+        } else {
+            initNothing();
+            selectedAuto = "INVALID";
         }
-        selectedAuto = "INVALID";
     }
 
     public String getAuto() {
@@ -145,13 +154,15 @@ public class AutoManager extends Command {
         ShootToThrill big2 = new ShootToThrill(ds, lighting, sl, sho, e, sh, k, sd, true, true, true);
         ShootToThrill big3 = new ShootToThrill(ds, lighting, sl, sho, e, sh, k, sd, true, true, true);
         ShootToThrill big4 = new ShootToThrill(ds, lighting, sl, sho, e, sh, k, sd, true, true, false);
-        commands.add(big1.alongWith(chero1));
+        commands.add(big1);
+        commands.add(chero1);
         // commands.add();
         commands.add(suadcg1);
-        commands.add(big2.alongWith(chero2));
-        // commands.add();
+        commands.add(big2);
+        commands.add(chero2);
         commands.add(suadcg2);
-        commands.add(big3.alongWith(chero3));
+        commands.add(big3);
+        commands.add(chero3);
         commands.add(suadcg3);
         commands.add(big4);
         commands.add(chero4);

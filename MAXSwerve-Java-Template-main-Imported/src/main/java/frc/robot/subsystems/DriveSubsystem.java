@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,6 +23,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -96,7 +98,7 @@ public class DriveSubsystem extends SubsystemBase {
                 .fromRobotRelativeSpeeds(DriveConstants.kDriveKinematics.toChassisSpeeds(m_frontLeft.getState(),
                         m_frontRight.getState(),
                         m_rearLeft.getState(),
-                        m_rearRight.getState()), theGyro.getRotation2d());
+                        m_rearRight.getState()), poseEstimator.getEstimatedPosition().getRotation());
     }
 
     /** Creates a new DriveSubsystem. */
@@ -159,6 +161,16 @@ public class DriveSubsystem extends SubsystemBase {
         }
     }
 
+    public void setPointAtBucket(boolean pay) {
+        pointAtYaw = pay;
+        if (pointAtYaw) {
+            if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
+                theYaw = .55;
+            } else
+                theYaw = 2.6;
+        }
+    }
+
     public void resetProfiled() {
         profiledPIDController.reset(poseEstimator.getEstimatedPosition().getRotation().getRadians());
     }
@@ -166,7 +178,7 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (DriverStation.isDisabled()) {
-            theGyro.setYaw(poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+            // theGyro.setYaw(poseEstimator.getEstimatedPosition().getRotation().getDegrees());
             poseEstimator.resetPosition(
                     Rotation2d.fromDegrees(theGyro.getYaw().getValue()),
                     new SwerveModulePosition[] {
@@ -195,7 +207,7 @@ public class DriveSubsystem extends SubsystemBase {
             Pose2d limeLightBotPose = LimelightHelpers.getBotPose2d(Constants.aLimelightName);
             Pose2d limeLightCorrected = new Pose2d(limeLightBotPose.getX() + Constants.limeLightxOff,
                     limeLightBotPose.getY() + Constants.limeLightyOff, limeLightBotPose.getRotation());
-            double std = areaToStd(LimelightHelpers.getTA(Constants.aLimelightName) / 200,
+            double std = areaToStd(LimelightHelpers.getTA(Constants.aLimelightName) / 120,
                     LimelightHelpers.getTX(Constants.aLimelightName));
             poseEstimator.addVisionMeasurement(limeLightCorrected, snapshotTime,
                     VecBuilder.fill(std, std, Units.degreesToRadians(50)));
@@ -235,7 +247,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void driveFieldRelative(ChassisSpeeds fieldChassisSpeedsIn) {
         ChassisSpeeds cs = ChassisSpeeds.fromFieldRelativeSpeeds(fieldChassisSpeedsIn,
-                Rotation2d.fromDegrees(theGyro.getYaw().getValue()));
+                getPose().getRotation());
         driveRobotRelative(cs);
     }
 
@@ -367,8 +379,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getHeading() {
-        // poseEstimator.getEstimatedPosition().getRotation().getDegrees()
-        return Rotation2d.fromDegrees(theGyro.getYaw().getValue()).getDegrees();
+        return getPose().getRotation().getDegrees();
     }
 
     public String diagnostic() {
